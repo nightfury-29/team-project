@@ -67,7 +67,8 @@ public class FindFlightInteractor implements FindFlightInputBoundary{
                 String originLocationCode = cityCodeConverter.getCode(originCityName);
                 String destinationLocationCode = cityCodeConverter.getCode(destCityName);
                 int adults = 1;
-                boolean nonstop = true;
+                boolean nonstop = false
+                        ;
 
                 List<Flight> flights = flightUserDataAccessObject.search(
                         originLocationCode, destinationLocationCode,
