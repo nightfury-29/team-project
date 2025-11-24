@@ -25,6 +25,7 @@ import use_case.login.LoginOutputBoundary;
 import use_case.logout.LogoutInputBoundary;
 import use_case.logout.LogoutInteractor;
 import use_case.logout.LogoutOutputBoundary;
+import use_case.save_flight.SaveFlightDataAccessInterface;
 import use_case.signup.SignupInputBoundary;
 import use_case.signup.SignupInteractor;
 import use_case.signup.SignupOutputBoundary;
@@ -58,6 +59,14 @@ import use_case.flight_detail.FlightDetailOutputBoundary;
 import use_case.flight_detail.FlightDetailInteractor;
 import view.FlightDetailView;
 
+import data_access.SaveFlightDataAccessObject;
+import interface_adapter.save_flight.SaveFlightController;
+import interface_adapter.save_flight.SaveFlightPresenter;
+import interface_adapter.save_flight.SaveFlightViewModel;
+import use_case.save_flight.SaveFlightInputBoundary;
+import use_case.save_flight.SaveFlightOutputBoundary;
+import use_case.save_flight.SaveFlightInteractor;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -87,6 +96,7 @@ public class AppBuilder {
     private FlightResultsView flightResultsView;
     private FlightDetailViewModel flightDetailViewModel;
     private FlightDetailView flightDetailView;
+    private SaveFlightViewModel saveFlightViewModel;
 
     public AppBuilder() {
         cardPanel.setLayout(cardLayout);
@@ -240,14 +250,17 @@ public class AppBuilder {
 
     public AppBuilder addFlightDetailView() {
         this.flightDetailViewModel = new FlightDetailViewModel();
+        this.saveFlightViewModel = new SaveFlightViewModel();
 
-        this.flightDetailView = new FlightDetailView(flightDetailViewModel);
+        this.flightDetailView = new FlightDetailView(flightDetailViewModel, saveFlightViewModel);
 
         cardPanel.add(flightDetailView, flightDetailView.getViewName());
         return this;
     }
 
     public AppBuilder addFlightDetailUseCase() {
+
+        // Flight Detail:
         final FlightDetailDataAccessInterface flightDetailDataAccessObject = new FlightDetailDataAccessObject();
 
         final FlightDetailPresenter presenter = new FlightDetailPresenter(flightDetailViewModel,
@@ -265,6 +278,17 @@ public class AppBuilder {
         if (this.flightResultsView != null) {
             this.flightResultsView.setFlightDetailController(controller);
         }
+
+        // Save Flight
+        final SaveFlightDataAccessInterface saveFlightDataAccessObject = new SaveFlightDataAccessObject();
+
+        final SaveFlightPresenter saveFlightPresenter = new SaveFlightPresenter(flightDetailView);
+
+        final SaveFlightInputBoundary saveFlightInteractor = new SaveFlightInteractor(saveFlightDataAccessObject, this.userDataAccessObject, saveFlightPresenter);
+
+        final SaveFlightController saveFlightController = new SaveFlightController(saveFlightInteractor);
+
+        flightDetailView.setSaveFlightController(saveFlightController);
 
         return this;
     }

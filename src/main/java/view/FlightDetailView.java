@@ -7,6 +7,10 @@ import entity.FlightDetail.Baggage;
 import interface_adapter.flight_detail.FlightDetailController;
 import interface_adapter.flight_detail.FlightDetailState;
 import interface_adapter.flight_detail.FlightDetailViewModel;
+import interface_adapter.logged_in.FindFlightController;
+import interface_adapter.save_flight.SaveFlightPresenter;
+import interface_adapter.save_flight.SaveFlightController;
+import interface_adapter.save_flight.SaveFlightViewModel;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,15 +22,20 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
     private final String viewName = "flight detail";
     private final FlightDetailViewModel fdViewModel;
     private FlightDetailController controller;
+    private SaveFlightController sfcontroller;
+    private final SaveFlightViewModel saveFlightViewModel;
 
     private final JLabel titleLabel = new JLabel("Flight Details", SwingConstants.CENTER);
     private final JPanel contentPanel = new JPanel();
     private final JButton saveButton = new JButton("Save Flight");
     private final JButton backButton = new JButton("Go Back");
 
-    public FlightDetailView(FlightDetailViewModel fdViewModel) {
+    public FlightDetailView(FlightDetailViewModel fdViewModel
+                            ,SaveFlightViewModel saveFlightViewModel) {
         this.fdViewModel = fdViewModel;
+        this.saveFlightViewModel = saveFlightViewModel;
         fdViewModel.addPropertyChangeListener(this);
+        saveFlightViewModel.addPropertyChangeListener(this);
 
         setLayout(new BorderLayout());
 
@@ -49,6 +58,19 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
         buttonPanel.add(saveButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
+        saveButton.addActionListener(e -> {
+            FlightDetailState state = fdViewModel.getState();
+            FlightDetail detail = state.getFlightDetail();
+
+            if (detail == null) {
+                JOptionPane.showMessageDialog(this, "No flight loaded.");
+                return;
+            }
+
+            sfcontroller.handleSaveButton(detail);
+        });
+
+
         renderEmpty();
     }
 
@@ -61,22 +83,34 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        if (!evt.getPropertyName().equals("state")) return;
+        // --------- SAVE FLIGHT EVENTS ---------
+        if ("saveFlightResult".equals(evt.getPropertyName())) {
 
-        FlightDetailState state = fdViewModel.getState();
+            // Get message from the ViewModel
+            String message = saveFlightViewModel.getMessage();
+            JOptionPane.showMessageDialog(this, message);
 
-        if (state.getErrorMessage() != null) {
-            JOptionPane.showMessageDialog(this, state.getErrorMessage());
-            return;
+            return; // Don't fall through to flight rendering
         }
 
-        FlightDetail detail = state.getFlightDetail();
-        if (detail == null) {
-            renderEmpty();
-            return;
-        }
 
-        renderDetail(detail);
+        // --------- FLIGHT DETAIL EVENTS ---------
+        if ("state".equals(evt.getPropertyName())) {
+
+            FlightDetailState state = fdViewModel.getState();
+
+            if (state.getErrorMessage() != null) {
+                JOptionPane.showMessageDialog(this, state.getErrorMessage());
+                return;
+            }
+
+            FlightDetail detail = state.getFlightDetail();
+            if (detail == null) {
+                renderEmpty();
+            } else {
+                renderDetail(detail);
+            }
+        }
     }
 
     private void renderEmpty() {
@@ -206,6 +240,19 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
     }
 
     public String getViewName() { return viewName; }
+
+    public void setSaveFlightController(SaveFlightController saveFlightController) {
+        this.sfcontroller = saveFlightController;
+    }
+
+    public void showMessage(String msg) {
+        JOptionPane.showMessageDialog(this, msg, "Success", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    public void showError(String msg) {
+        JOptionPane.showMessageDialog(this, msg, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
 }
 
 
