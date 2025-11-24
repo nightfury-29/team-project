@@ -1,18 +1,18 @@
 package interface_adapter.go_back;
 
-import interface_adapter.ViewManagerModel;
+import use_case.go_back.GoBackInputBoundary;
 
-// This controller is simple: it just tells the ViewManager to switch views.
 public class GoBackController {
 
-    private final ViewManagerModel viewManagerModel;
+    private final GoBackInputBoundary interactor;
 
-    public GoBackController(ViewManagerModel viewManagerModel) {
-        this.viewManagerModel = viewManagerModel;
+    // The constructor must accept the InputBoundary, NOT the ViewManagerModel
+    public GoBackController(GoBackInputBoundary interactor) {
+        this.interactor = interactor;
     }
 
     public void execute(String viewName) {
-        viewManagerModel.setState(viewName);
-        viewManagerModel.firePropertyChange();
+        interactor.execute(viewName);
     }
 }
+
