@@ -65,6 +65,15 @@ import use_case.go_back.GoBackInputBoundary;
 import use_case.go_back.GoBackInteractor;
 import use_case.go_back.GoBackOutputBoundary;
 
+import use_case.save_flight.SaveFlightDataAccessInterface;
+import data_access.SaveFlightDataAccessObject;
+import interface_adapter.save_flight.SaveFlightController;
+import interface_adapter.save_flight.SaveFlightPresenter;
+import interface_adapter.save_flight.SaveFlightViewModel;
+import use_case.save_flight.SaveFlightInputBoundary;
+import use_case.save_flight.SaveFlightOutputBoundary;
+import use_case.save_flight.SaveFlightInteractor;
+
 import javax.swing.*;
 import java.awt.*;
 
