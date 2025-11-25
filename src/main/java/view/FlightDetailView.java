@@ -7,8 +7,7 @@ import entity.FlightDetail.Baggage;
 import interface_adapter.flight_detail.FlightDetailController;
 import interface_adapter.flight_detail.FlightDetailState;
 import interface_adapter.flight_detail.FlightDetailViewModel;
-import interface_adapter.logged_in.FindFlightController;
-import interface_adapter.save_flight.SaveFlightPresenter;
+import interface_adapter.go_back.GoBackController;
 import interface_adapter.save_flight.SaveFlightController;
 import interface_adapter.save_flight.SaveFlightViewModel;
 
@@ -22,13 +21,14 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
     private final String viewName = "flight detail";
     private final FlightDetailViewModel fdViewModel;
     private FlightDetailController controller;
+    private GoBackController goBackController;
     private SaveFlightController sfcontroller;
     private final SaveFlightViewModel saveFlightViewModel;
 
     private final JLabel titleLabel = new JLabel("Flight Details", SwingConstants.CENTER);
     private final JPanel contentPanel = new JPanel();
     private final JButton saveButton = new JButton("Save Flight");
-    private final JButton backButton = new JButton("Go Back");
+    private final JButton goback = new JButton("Go Back");
 
     public FlightDetailView(FlightDetailViewModel fdViewModel
                             ,SaveFlightViewModel saveFlightViewModel) {
@@ -54,7 +54,14 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
 
         // ---------- Buttons ----------
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
-        buttonPanel.add(backButton);
+
+        buttonPanel.add(goback);
+        goback.addActionListener(e -> {
+            if (goBackController != null) {
+                goBackController.execute("flight results");
+            }
+        });
+
         buttonPanel.add(saveButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
@@ -79,7 +86,7 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
     }
 
     public JButton getSaveButton() { return saveButton; }
-    public JButton getBackButton() { return backButton; }
+    public JButton getGoback() { return goback; }
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
@@ -241,6 +248,10 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
 
     public String getViewName() { return viewName; }
 
+    public void setGoBackController(GoBackController goBackController) {
+        this.goBackController = goBackController;
+    }
+
     public void setSaveFlightController(SaveFlightController saveFlightController) {
         this.sfcontroller = saveFlightController;
     }
@@ -254,5 +265,3 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
     }
 
 }
-
-

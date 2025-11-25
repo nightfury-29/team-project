@@ -296,6 +296,15 @@ public class AppBuilder {
             this.flightResultsView.setFlightDetailController(controller);
         }
 
+        // Go Back
+        final GoBackOutputBoundary goBackPresenter = new GoBackPresenter(viewManagerModel);
+
+        final GoBackInputBoundary goBackInteractor = new GoBackInteractor(goBackPresenter);
+
+        final GoBackController goBackController = new GoBackController(goBackInteractor);
+
+        flightDetailView.setGoBackController(goBackController);
+
         // Save Flight
         final SaveFlightDataAccessInterface saveFlightDataAccessObject = new SaveFlightDataAccessObject();
 
