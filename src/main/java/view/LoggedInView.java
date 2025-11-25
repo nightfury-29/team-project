@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import interface_adapter.saved_flights.SeeSavedFlightsController;
 
 /**
  * The View for when the user is logged into the program.
@@ -29,7 +30,7 @@ public class LoggedInView extends JPanel implements ActionListener, PropertyChan
     //  TODO: IMPLEMENT the controllers, then uncomment this code
 //  private FindFlightController findFlightController;
 //  private SeeHistoryController seeHistoryController;
-//  private SeeSavedFlightsController seeSavedFlightsController;
+    private SeeSavedFlightsController seeSavedFlightsController;
 //  private LogHistoryController logHistoryController;
     private final JButton logOut;
 
@@ -216,27 +217,19 @@ public class LoggedInView extends JPanel implements ActionListener, PropertyChan
                 }
         );
 
-        seeHistory.addActionListener(
-                // This creates an anonymous subclass of ActionListener and instantiates it.
-                evt -> {
-                    if (evt.getSource().equals(seeHistory)) {
-                        final LoggedInState currentState = loggedInViewModel.getState();
-                        // TODO: Implement seeHistoryController
-//                        this.seeHistoryController.execute();
-                    }
-                }
-        );
+        seeSavedFlights.addActionListener(evt -> {
+            System.out.println("[UI] Saved Flights button clicked!");
+            LoggedInState currentState = loggedInViewModel.getState();
+            System.out.println("[UI] current user = " + currentState.getUsername());
 
-        seeSavedFlights.addActionListener(
-                // This creates an anonymous subclass of ActionListener and instantiates it.
-                evt -> {
-                    if (evt.getSource().equals(seeSavedFlights)) {
-                        final LoggedInState currentState = loggedInViewModel.getState();
-                        // TODO: Implement seeSavedFlightsController
-//                        this.seeSavedController.execute();
-                    }
-                }
-        );
+            if (seeSavedFlightsController != null) {
+                System.out.println("[UI] calling controller...");
+                seeSavedFlightsController.execute(currentState.getUsername());
+            } else {
+                System.err.println("[UI] Controller is NULL!!! Wiring error.");
+            }
+        });
+
 
         this.add(title);
         this.add(this.usernameInfo);
@@ -296,5 +289,9 @@ public class LoggedInView extends JPanel implements ActionListener, PropertyChan
     public void setFindFlightController(FindFlightController findFlightController) {
         this.findFlightController = findFlightController;
     }
+    public void setSeeSavedFlightsController(SeeSavedFlightsController controller) {
+        this.seeSavedFlightsController = controller;
+    }
+
 }
 

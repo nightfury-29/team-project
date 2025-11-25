@@ -12,6 +12,7 @@ public class GoBackController {
     }
 
     public void execute(String viewName) {
+        System.out.println("[GoBackController] execute called destination = " + viewName);
         interactor.execute(viewName);
     }
 }
