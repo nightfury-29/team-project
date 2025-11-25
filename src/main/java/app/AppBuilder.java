@@ -1,6 +1,6 @@
 package app;
 
-import data_access.FileUserDataAccessObject;
+import data_access.*;
 import entity.UserFactory;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.flight_detail.FlightDetailViewModel;
@@ -29,13 +29,12 @@ import use_case.save_flight.SaveFlightDataAccessInterface;
 import use_case.signup.SignupInputBoundary;
 import use_case.signup.SignupInteractor;
 import use_case.signup.SignupOutputBoundary;
+import use_case.sort_flights.SortFlightsDataAccessInterface;
 import view.LoggedInView;
 import view.LoginView;
 import view.SignupView;
 import view.ViewManager;
 
-import data_access.FlightSearchInformationDAO;
-import data_access.InMemoryFlightDataAccessObject;
 import helpers.CityCodeConverter;
 import helpers.SearchInfoVerifier;
 import interface_adapter.flight_results.FlightResultsViewModel;
@@ -51,21 +50,17 @@ import use_case.sort_flights.SortFlightsInputBoundary;
 import use_case.sort_flights.SortFlightsInteractor;
 import use_case.sort_flights.SortFlightsOutputBoundary;
 
-import data_access.FlightDetailDataAccessObject;
 import interface_adapter.flight_detail.FlightDetailController;
 import interface_adapter.flight_detail.FlightDetailPresenter;
 import use_case.flight_detail.FlightDetailInputBoundary;
 import use_case.flight_detail.FlightDetailInteractor;
 import view.FlightDetailView;
 
-import interface_adapter.go_back.GoBackController;
 import interface_adapter.go_back.GoBackPresenter;
 import use_case.go_back.GoBackInputBoundary;
 import use_case.go_back.GoBackInteractor;
 import use_case.go_back.GoBackOutputBoundary;
 
-import use_case.save_flight.SaveFlightDataAccessInterface;
-import data_access.SaveFlightDataAccessObject;
 import interface_adapter.save_flight.SaveFlightController;
 import interface_adapter.save_flight.SaveFlightPresenter;
 import interface_adapter.save_flight.SaveFlightViewModel;
@@ -252,8 +247,12 @@ public class AppBuilder {
         // --- Initialize Presenter ---
         SortFlightsOutputBoundary sortFlightsPresenter = new SortFlightsPresenter(flightResultsViewModel);
 
-        // --- Initialize Interactor ---
-        SortFlightsInputBoundary sortFlightsInteractor = new SortFlightsInteractor(sortFlightsPresenter);
+
+        // 1. Create DAO
+        SortFlightsDataAccessInterface sortDAO = new InMemorySortSettingsDAO(); // Or null if you prefer
+
+        // 2. Pass DAO to Interactor
+        SortFlightsInputBoundary sortFlightsInteractor = new SortFlightsInteractor(sortFlightsPresenter, sortDAO);
 
         // --- Initialize Controller ---
         SortFlightsController sortFlightsController = new SortFlightsController(sortFlightsInteractor);
