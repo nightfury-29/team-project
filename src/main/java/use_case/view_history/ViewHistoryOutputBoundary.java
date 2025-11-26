@@ -1,7 +1,5 @@
 package use_case.view_history;
 
-import use_case.signup.SignupOutputData;
-
 /**
  * The output boundary for the View History Use Case.
  */

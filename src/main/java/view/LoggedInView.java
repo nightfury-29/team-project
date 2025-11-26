@@ -267,6 +267,14 @@ public class LoggedInView extends JPanel implements ActionListener, PropertyChan
         else if (evt.getPropertyName().equals("error")) {
             JOptionPane.showMessageDialog(this, state.getError());
         }
+
+        else if  (evt.getPropertyName().equals("load selection")) {
+            fromInputField.setText(state.getFrom());
+            toInputField.setText(state.getTo());
+            dayInputField.setText(state.getDay());
+            monthInputField.setSelectedItem(state.getMonth());
+            yearInputField.setSelectedItem(state.getYear());
+        }
     }
 
     public String getViewName() {

@@ -17,11 +17,16 @@ import interface_adapter.signup.SignupPresenter;
 import interface_adapter.signup.SignupViewModel;
 import interface_adapter.view_history.ViewHistoryController;
 import interface_adapter.view_history.ViewHistoryPresenter;
+import interface_adapter.viewing_history.LoadHistoryController;
+import interface_adapter.viewing_history.LoadHistoryPresenter;
 import interface_adapter.viewing_history.ViewingHistoryViewModel;
 import use_case.change_password.ChangePasswordInputBoundary;
 import use_case.change_password.ChangePasswordInteractor;
 import use_case.change_password.ChangePasswordOutputBoundary;
 import use_case.flight_detail.FlightDetailDataAccessInterface;
+import use_case.load_history.LoadHistoryInputBoundary;
+import use_case.load_history.LoadHistoryInteractor;
+import use_case.load_history.LoadHistoryOutputBoundary;
 import use_case.login.LoginInputBoundary;
 import use_case.login.LoginInteractor;
 import use_case.login.LoginOutputBoundary;
@@ -323,6 +328,16 @@ public class AppBuilder {
         final ViewHistoryInputBoundary viewHistoryInteractor = new ViewHistoryInteractor(searchHistoryDAO,  viewHistoryPresenter);
         final ViewHistoryController viewHistoryController = new ViewHistoryController(viewHistoryInteractor);
         loggedInView.setViewHistoryController(viewHistoryController);
+
+        return this;
+    }
+
+    public AppBuilder addLoadHistoryUseCase() {
+
+        final LoadHistoryOutputBoundary loadHistoryPresenter = new LoadHistoryPresenter(viewingHistoryViewModel, loggedInViewModel, viewManagerModel);
+        final LoadHistoryInputBoundary loadHistoryInteractor = new LoadHistoryInteractor(loadHistoryPresenter);
+        final LoadHistoryController loadHistoryController = new LoadHistoryController(loadHistoryInteractor);
+        viewingHistoryView.setLoadHistoryController(loadHistoryController);
 
         return this;
     }

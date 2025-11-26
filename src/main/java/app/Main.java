@@ -20,6 +20,7 @@ public class Main {
                 .addSortFlightsUseCase()
                 .addFlightDetailUseCase()
                 .addViewHistoryUseCase()
+                .addLoadHistoryUseCase()
                 .build();
 
         application.pack();

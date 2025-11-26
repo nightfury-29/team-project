@@ -1,6 +1,7 @@
 package view;
 
 import entity.FlightSearchInformation;
+import interface_adapter.viewing_history.LoadHistoryController;
 import interface_adapter.viewing_history.ViewingHistoryState;
 import interface_adapter.viewing_history.ViewingHistoryViewModel;
 import java.util.List;
@@ -22,9 +23,7 @@ public class ViewingHistoryView extends JPanel implements ActionListener, Proper
 
     private final String viewName = "viewing history";
     private final ViewingHistoryViewModel viewingHistoryViewModel;
-
-    // TODO: Implement the LoadHistoryController
-    // private LoadHistoryController loadHistoryController;
+    private LoadHistoryController loadHistoryController;
 
     private final JLabel titleLabel;
     private final JButton goBack;
@@ -77,12 +76,48 @@ public class ViewingHistoryView extends JPanel implements ActionListener, Proper
                 // Handles updating the selected entry in the state
                 int row = historyTable.getSelectedRow();
                 final ViewingHistoryState currentState = this.viewingHistoryViewModel.getState();
-                currentState.setSelectedEntry(currentState.getSearchHistory().get(row));
-                this.viewingHistoryViewModel.setState(currentState);
+
+                if (row != -1) {
+
+                    currentState.setSelectedEntry(currentState.getSearchHistory().get(row));
+                    this.viewingHistoryViewModel.setState(currentState);
+                }
+
+                else {
+                    currentState.setSelectedEntry(null);
+                    this.viewingHistoryViewModel.setState(currentState);
+                }
+
             }
         });
 
+        // Add listener to Go Back button
+        this.goBack.addActionListener(evt -> {
+            if (evt.getSource() == this.goBack) {
+                loadHistoryController.switchToLoggedInView();
+            }
+        });
 
+        // Add listener to Load Selection button
+        this.loadSelection.addActionListener(evt -> {
+            if (evt.getSource() == this.loadSelection) {
+                final ViewingHistoryState currentState = this.viewingHistoryViewModel.getState();
+
+                if (currentState.getSelectedEntry() != null) {
+                    final FlightSearchInformation flightSearchInformation = currentState.getSelectedEntry();
+                    final String from = flightSearchInformation.getFrom();
+                    final String to = flightSearchInformation.getTo();
+                    final String day = String.valueOf(flightSearchInformation.getDay());
+                    final String month = flightSearchInformation.getMonth();
+                    final String year =  String.valueOf(flightSearchInformation.getYear());
+                    this.loadHistoryController.execute(from, to, day, month, year);
+                }
+
+                else {
+                    this.loadHistoryController.execute(null, null, null, null, null);
+                }
+            }
+        });
     }
 
     private void initializeHistoryTable(List<FlightSearchInformation> searchHistory) {
@@ -99,7 +134,6 @@ public class ViewingHistoryView extends JPanel implements ActionListener, Proper
         }
     }
 
-
     @Override
     public void actionPerformed(ActionEvent e) {
 
@@ -114,6 +148,13 @@ public class ViewingHistoryView extends JPanel implements ActionListener, Proper
             initializeHistoryTable(searchHistory);
         }
 
+        else if (evt.getPropertyName().equals("error")) {
+            JOptionPane.showMessageDialog(this, state.getErrorMessage());
+        }
+    }
+
+    public void setLoadHistoryController(LoadHistoryController loadHistoryController) {
+        this.loadHistoryController = loadHistoryController;
     }
 
     public String getViewName() {
