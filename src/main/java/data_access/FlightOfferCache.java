@@ -69,7 +69,7 @@ public class FlightOfferCache {
     }
 
     /**
-     * Clears the cache (optional, only if needed)
+     * Clears the cache
      */
     public synchronized void clear() {
         fullResponseJson = null;

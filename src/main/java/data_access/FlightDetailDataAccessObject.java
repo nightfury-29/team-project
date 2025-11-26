@@ -17,7 +17,7 @@ public class FlightDetailDataAccessObject implements FlightDetailDataAccessInter
 
     @Override
     public FlightDetail fetchDetail(Flight flight) {
-        System.out.println("[DEBUG] DAO called: fetchDetail(), flight ID = " + flight.Id);
+//        System.out.println("[DEBUG] DAO called: fetchDetail(), flight ID = " + flight.Id);
 
 
         if (flight == null || flight.Id == null) {

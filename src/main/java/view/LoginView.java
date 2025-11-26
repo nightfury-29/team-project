@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import interface_adapter.saved_flights.SeeSavedFlightsController;
 
 /**
  * The View for when the user is logging into the program.
@@ -27,6 +28,7 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
     private final JButton logIn;
     private final JButton cancel;
     private LoginController loginController = null;
+    private SeeSavedFlightsController seeSavedFlightsController;
 
     public LoginView(LoginViewModel loginViewModel) {
 
@@ -158,4 +160,9 @@ public class LoginView extends JPanel implements ActionListener, PropertyChangeL
     public void setLoginController(LoginController loginController) {
         this.loginController = loginController;
     }
+
+    public void setSeeSavedFlightsController(SeeSavedFlightsController controller) {
+        this.seeSavedFlightsController = controller;
+    }
+
 }

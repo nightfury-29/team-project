@@ -21,6 +21,8 @@ public class Main {
                 .addFlightDetailUseCase()
                 .addViewHistoryUseCase()
                 .addLoadHistoryUseCase()
+                .addSavedFlightsView()
+                .addSavedFlightsUseCase()
                 .build();
 
         application.pack();
