@@ -1,7 +1,5 @@
 package use_case.view_history;
 
-import entity.FlightSearchInformation;
-
 import java.util.List;
 
 /**
@@ -10,14 +8,14 @@ import java.util.List;
 
 public class ViewHistoryOutputData {
 
-    private final List<FlightSearchInformation> searchHistory;
+    private final List<ViewHistoryOutputDataItem> searchHistory;
 
-    public ViewHistoryOutputData(List<FlightSearchInformation> searchHistory) {
+    public ViewHistoryOutputData(List<ViewHistoryOutputDataItem> searchHistory) {
         this.searchHistory = searchHistory;
 
     }
 
-    public List<FlightSearchInformation> getSearchHistory() {
+    public List<ViewHistoryOutputDataItem> getSearchHistory() {
         return searchHistory;
     }
 }

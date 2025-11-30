@@ -55,7 +55,7 @@ public class SearchHistoryDAO implements LogSearchInfoDataAccessInterface, ViewH
                     final String[] col = row.split(",");
                     final String username = String.valueOf(col[headers.get("username")]);
                     final String date = String.valueOf(col[headers.get("date")]);
-                    final  String time = String.valueOf(col[headers.get("time")]);
+                    final String time = String.valueOf(col[headers.get("time")]);
                     final String from = String.valueOf(col[headers.get("from")]);
                     final String to = String.valueOf(col[headers.get("to")]);
                     final String day = String.valueOf(col[headers.get("day")]);

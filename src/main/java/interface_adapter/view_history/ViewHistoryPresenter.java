@@ -1,14 +1,16 @@
 package interface_adapter.view_history;
 
-import entity.FlightSearchInformation;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
+import interface_adapter.viewing_history.SearchHistoryItem;
 import interface_adapter.viewing_history.ViewingHistoryState;
 import interface_adapter.viewing_history.ViewingHistoryViewModel;
 import use_case.view_history.ViewHistoryOutputBoundary;
 import use_case.view_history.ViewHistoryOutputData;
+import use_case.view_history.ViewHistoryOutputDataItem;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,9 +33,24 @@ public class ViewHistoryPresenter implements ViewHistoryOutputBoundary {
 
     @Override
     public void prepareSuccessView(ViewHistoryOutputData viewHistoryOutputData) {
-        final List<FlightSearchInformation> searchHistory = viewHistoryOutputData.getSearchHistory();
 
-        // Notify the view (Viewing History View) that we are switching to
+        // Unpack the output data for the view model
+        final List<SearchHistoryItem> searchHistory = new ArrayList<>();
+
+        for (ViewHistoryOutputDataItem item : viewHistoryOutputData.getSearchHistory()) {
+            final String date = item.getDate();
+            final String time = item.getTime();
+            final String from = item.getFrom();
+            final String to = item.getTo();
+            final String day = item.getDay();
+            final String month = item.getMonth();
+            final String year = item.getYear();
+
+            final SearchHistoryItem searchHistoryItem = new SearchHistoryItem(date, time, from, to, day, month, year);
+            searchHistory.add(searchHistoryItem);
+        }
+
+        // Retrieve and update the state of the view model
         final ViewingHistoryState viewingHistoryState = viewingHistoryViewModel.getState();
         viewingHistoryState.setSearchHistory(searchHistory);
         viewingHistoryViewModel.firePropertyChange("initialize success view");

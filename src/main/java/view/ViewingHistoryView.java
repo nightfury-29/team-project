@@ -1,7 +1,7 @@
 package view;
 
-import entity.FlightSearchInformation;
 import interface_adapter.viewing_history.LoadHistoryController;
+import interface_adapter.viewing_history.SearchHistoryItem;
 import interface_adapter.viewing_history.ViewingHistoryState;
 import interface_adapter.viewing_history.ViewingHistoryViewModel;
 import java.util.List;
@@ -41,14 +41,14 @@ public class ViewingHistoryView extends JPanel implements ActionListener, Proper
         this.titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // Set up buttons
-        JPanel buttons = new JPanel();
+        final JPanel buttons = new JPanel();
         this.goBack = new JButton("Go Back");
         this.loadSelection = new JButton("Load Selection");
         buttons.add(goBack);
         buttons.add(loadSelection);
 
         // Set up table
-        String[] columnTitles = {"Date", "Time", "From", "To", "Day of Arrival", "Month of Arrival", "Year of Arrival"};
+        final String[] columnTitles = {"Date", "Time", "From", "To", "Day of Arrival", "Month of Arrival", "Year of Arrival"};
 
         this.tableModel = new DefaultTableModel(columnTitles, 0) {
             @Override
@@ -104,12 +104,12 @@ public class ViewingHistoryView extends JPanel implements ActionListener, Proper
                 final ViewingHistoryState currentState = this.viewingHistoryViewModel.getState();
 
                 if (currentState.getSelectedEntry() != null) {
-                    final FlightSearchInformation flightSearchInformation = currentState.getSelectedEntry();
-                    final String from = flightSearchInformation.getFrom();
-                    final String to = flightSearchInformation.getTo();
-                    final String day = String.valueOf(flightSearchInformation.getDay());
-                    final String month = flightSearchInformation.getMonth();
-                    final String year =  String.valueOf(flightSearchInformation.getYear());
+                    final SearchHistoryItem searchInformation = currentState.getSelectedEntry();
+                    final String from = searchInformation.getFrom();
+                    final String to = searchInformation.getTo();
+                    final String day = searchInformation.getDay();
+                    final String month = searchInformation.getMonth();
+                    final String year = searchInformation.getYear();
                     this.loadHistoryController.execute(from, to, day, month, year);
                 }
 
@@ -120,14 +120,14 @@ public class ViewingHistoryView extends JPanel implements ActionListener, Proper
         });
     }
 
-    private void initializeHistoryTable(List<FlightSearchInformation> searchHistory) {
+    private void initializeHistoryTable(List<SearchHistoryItem> searchHistory) {
 
         // Clear existing rows
         this.tableModel.setRowCount(0);
 
         // Populate and add rows to the table
-        for (FlightSearchInformation search:  searchHistory) {
-            Object[] row = {search.getDateOfSearch(), search.getTimeOfSearch(), search.getFrom(),
+        for (SearchHistoryItem search: searchHistory) {
+            final Object[] row = {search.getDate(), search.getTime(), search.getFrom(),
                     search.getTo(), search.getDay(), search.getMonth(), search.getYear()};
 
             this.tableModel.addRow(row);
@@ -144,7 +144,7 @@ public class ViewingHistoryView extends JPanel implements ActionListener, Proper
         final ViewingHistoryState state = (ViewingHistoryState) evt.getNewValue();
 
         if (evt.getPropertyName().equals("initialize success view")) {
-            List<FlightSearchInformation> searchHistory =  state.getSearchHistory();
+            final List<SearchHistoryItem> searchHistory = state.getSearchHistory();
             initializeHistoryTable(searchHistory);
         }
 

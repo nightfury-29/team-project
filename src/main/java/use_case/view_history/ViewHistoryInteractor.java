@@ -2,13 +2,14 @@ package use_case.view_history;
 
 import entity.FlightSearchInformation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * The View History Interactor.
  */
 
-public class ViewHistoryInteractor implements ViewHistoryInputBoundary{
+public class ViewHistoryInteractor implements ViewHistoryInputBoundary {
 
     private final ViewHistoryDataAccessInterface viewHistoryDataAccessObject;
     private final ViewHistoryOutputBoundary viewHistoryPresenter;
@@ -24,19 +25,36 @@ public class ViewHistoryInteractor implements ViewHistoryInputBoundary{
     public void execute(ViewHistoryInputData viewHistoryInputData) {
 
         // Call the Data Access Object to get the user's search history
-        String username = viewHistoryInputData.getUsername();
+        final String username = viewHistoryInputData.getUsername();
         final List<FlightSearchInformation> searchHistory = viewHistoryDataAccessObject.getSearchHistory(username);
 
-        // If user has a search history, package the data and prepare success view
+        // If user has a search history, extract relevant data from entities and package as output data
         if (searchHistory != null) {
-            final ViewHistoryOutputData viewHistoryOutputData = new ViewHistoryOutputData(searchHistory);
-            viewHistoryPresenter.prepareSuccessView(viewHistoryOutputData);
+
+            final List<ViewHistoryOutputDataItem> data = new ArrayList<>();
+
+            for (FlightSearchInformation search : searchHistory) {
+                final String date = search.getDateOfSearch();
+                final String time = search.getTimeOfSearch();
+                final String from = search.getFrom();
+                final String to = search.getTo();
+                final String day = Integer.toString(search.getDay());
+                final String month = search.getMonth();
+                final String year = Integer.toString(search.getYear());
+
+                final ViewHistoryOutputDataItem outputDataItem = new ViewHistoryOutputDataItem(date, time, from, to, day, month, year);
+                data.add(outputDataItem);
+            }
+
+            final ViewHistoryOutputData outputData = new ViewHistoryOutputData(data);
+
+            viewHistoryPresenter.prepareSuccessView(outputData);
         }
 
         // If not, prepare fail view
         else {
-            viewHistoryPresenter.prepareFailView("Hmm...it appears you do not have any search history yet." +
-                    "\nSearch for a flight and try clicking this button again!");
+            viewHistoryPresenter.prepareFailView("Hmm...it appears you do not have any search history yet."
+                    + "\nSearch for a flight and try clicking this button again!");
         }
 
     }

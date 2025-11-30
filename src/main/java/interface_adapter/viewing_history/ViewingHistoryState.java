@@ -1,7 +1,5 @@
 package interface_adapter.viewing_history;
 
-import entity.FlightSearchInformation;
-
 import java.util.List;
 
 /**
@@ -10,15 +8,15 @@ import java.util.List;
 
 public class ViewingHistoryState {
 
-    private List<FlightSearchInformation> searchHistory;
-    private FlightSearchInformation selectedEntry;
+    private List<SearchHistoryItem> searchHistory;
+    private SearchHistoryItem selectedEntry;
     private String errorMessage;
 
-    public List<FlightSearchInformation> getSearchHistory() {
+    public List<SearchHistoryItem> getSearchHistory() {
         return searchHistory;
     }
 
-    public FlightSearchInformation getSelectedEntry() {
+    public SearchHistoryItem getSelectedEntry() {
         return selectedEntry;
     }
 
@@ -26,11 +24,11 @@ public class ViewingHistoryState {
         return errorMessage;
     }
 
-    public void setSearchHistory(List<FlightSearchInformation> searchHistory) {
+    public void setSearchHistory(List<SearchHistoryItem> searchHistory) {
         this.searchHistory = searchHistory;
     }
 
-    public void setSelectedEntry(FlightSearchInformation selectedEntry) {
+    public void setSelectedEntry(SearchHistoryItem selectedEntry) {
         this.selectedEntry = selectedEntry;
     }
 
