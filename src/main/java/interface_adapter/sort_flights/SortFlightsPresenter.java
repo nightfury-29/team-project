@@ -25,7 +25,8 @@ public class SortFlightsPresenter implements SortFlightsOutputBoundary {
     @Override
     public void prepareSuccessView(SortFlightsOutputData sortFlightsOutputData) {
         // Update the state in the ViewModel
-        FlightResultsState currentState = flightResultsViewModel.getState();
+        // FIXED: Added 'final' keyword here
+        final FlightResultsState currentState = flightResultsViewModel.getState();
         currentState.setFlights(sortFlightsOutputData.getSortedFlights());
 
         // Fire property change to notify the View to update the table

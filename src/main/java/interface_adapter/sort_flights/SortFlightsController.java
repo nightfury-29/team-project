@@ -1,9 +1,10 @@
 package interface_adapter.sort_flights;
 
+import java.util.List;
+
 import entity.Flight;
 import use_case.sort_flights.SortFlightsInputBoundary;
 import use_case.sort_flights.SortFlightsInputData;
-import java.util.List;
 
 /**
  * The Controller for the Sort Flights Use Case.
@@ -29,7 +30,8 @@ public class SortFlightsController {
      * @param sortType the type of sort requested (e.g., "PRICE").
      */
     public void execute(List<Flight> flights, String sortType) {
-        SortFlightsInputData inputData = new SortFlightsInputData(flights, sortType);
+        // FIXED: Added 'final' keyword here
+        final SortFlightsInputData inputData = new SortFlightsInputData(flights, sortType);
         interactor.execute(inputData);
     }
 }

@@ -1,7 +1,8 @@
 package use_case.sort_flights;
 
-import entity.Flight;
 import java.util.List;
+
+import entity.Flight;
 
 /**
  * The Output Data for the Sort Flights Use Case.
