@@ -1,7 +1,6 @@
 package use_case.compare_saved_flights;
 
 import entity.FlightDetail;
-
 import java.util.List;
 
 public class CompareSavedFlightsInteractor implements CompareSavedFlightsInputBoundary {
@@ -14,19 +13,34 @@ public class CompareSavedFlightsInteractor implements CompareSavedFlightsInputBo
 
     @Override
     public void execute(CompareSavedFlightsInputData inputData) {
-        FlightDetail f1 = inputData.getFirst();
-        FlightDetail f2 = inputData.getSecond();
+        FlightDetail first = inputData.getFirst();
+        FlightDetail second = inputData.getSecond();
 
-        CompareSavedFlightsOutputData.FlightSummary s1 = toSummary(f1);
-        CompareSavedFlightsOutputData.FlightSummary s2 = toSummary(f2);
+        CompareSavedFlightsOutputData.FlightSummary s1 = toSummary(first);
+        CompareSavedFlightsOutputData.FlightSummary s2 = toSummary(second);
 
-        CompareSavedFlightsOutputData output = new CompareSavedFlightsOutputData(s1, s2);
+        CompareSavedFlightsOutputData output =
+                new CompareSavedFlightsOutputData(s1, s2);
+
         presenter.present(output);
     }
 
     private CompareSavedFlightsOutputData.FlightSummary toSummary(FlightDetail fd) {
-        // 使用第一个 segment 的数据
         List<FlightDetail.SegmentDetail> segs = fd.segments;
+
+        if (segs == null || segs.isEmpty()) {
+            // 防御性写法：没有 segment 的话给一份空 summary
+            return new CompareSavedFlightsOutputData.FlightSummary(
+                    "",
+                    "",
+                    "",
+                    fd.price.total,
+                    fd.price.currency,
+                    0,
+                    0
+            );
+        }
+
         FlightDetail.SegmentDetail seg = segs.get(0);
 
         int checked = 0;
@@ -37,7 +51,7 @@ public class CompareSavedFlightsInteractor implements CompareSavedFlightsInputBo
         }
 
         return new CompareSavedFlightsOutputData.FlightSummary(
-                seg.carrierCode,                  // airline / carrier
+                seg.carrierCode,
                 seg.flightNumber,
                 seg.duration,
                 fd.price.total,

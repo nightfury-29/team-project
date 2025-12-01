@@ -93,6 +93,14 @@ import interface_adapter.saved_flights.SavedFlightsViewModel;
 import interface_adapter.saved_flights.SeeSavedFlightsController;
 import interface_adapter.saved_flights.SavedFlightDetailController;
 
+import interface_adapter.compare_saved_flights.CompareSavedFlightsController;
+import interface_adapter.compare_saved_flights.CompareSavedFlightsPresenter;
+import interface_adapter.compare_saved_flights.CompareSavedFlightsViewModel;
+import use_case.compare_saved_flights.CompareSavedFlightsInputBoundary;
+import use_case.compare_saved_flights.CompareSavedFlightsInteractor;
+import use_case.compare_saved_flights.CompareSavedFlightsOutputBoundary;
+import view.CompareFlightsView;
+
 import view.SavedFlightsView;
 
 import javax.swing.*;
@@ -131,6 +139,8 @@ public class AppBuilder {
     private SavedFlightsViewModel savedFlightsViewModel;
     private SavedFlightsView savedFlightsView;
     private FlightDetailController flightDetailController;
+    private CompareSavedFlightsViewModel compareSavedFlightsViewModel;
+    private CompareFlightsView compareFlightsView;
 
 
     public AppBuilder() {
@@ -439,5 +449,37 @@ public class AppBuilder {
 
         return this;
     }
+    public AppBuilder addCompareSavedFlightsView() {
+        this.compareSavedFlightsViewModel = new CompareSavedFlightsViewModel();
+        this.compareFlightsView = new CompareFlightsView(compareSavedFlightsViewModel);
+
+        cardPanel.add(compareFlightsView, compareSavedFlightsViewModel.getViewName());
+
+        GoBackOutputBoundary goBackPresenter = new GoBackPresenter(viewManagerModel);
+        GoBackInputBoundary goBackInteractor = new GoBackInteractor(goBackPresenter);
+        GoBackController goBackController = new GoBackController(goBackInteractor);
+        compareFlightsView.setGoBackController(goBackController);
+
+        return this;
+    }
+    public AppBuilder addCompareSavedFlightsUseCase() {
+
+        // presenter
+        CompareSavedFlightsOutputBoundary presenter =
+                new CompareSavedFlightsPresenter(compareSavedFlightsViewModel, viewManagerModel);
+
+        // interactor
+        CompareSavedFlightsInputBoundary interactor =
+                new CompareSavedFlightsInteractor(presenter);
+
+        // controller
+        CompareSavedFlightsController controller =
+                new CompareSavedFlightsController(interactor);
+
+        this.savedFlightsView.setCompareSavedFlightsController(controller);
+
+        return this;
+    }
+
 
 }

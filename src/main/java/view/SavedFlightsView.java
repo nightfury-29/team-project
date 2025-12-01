@@ -5,6 +5,7 @@ import entity.FlightDetail.SegmentDetail;
 import interface_adapter.saved_flights.SavedFlightsViewModel;
 import interface_adapter.saved_flights.SavedFlightDetailController;
 import interface_adapter.go_back.GoBackController;
+import interface_adapter.compare_saved_flights.CompareSavedFlightsController;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -32,6 +33,8 @@ public class SavedFlightsView extends JPanel implements PropertyChangeListener {
 
     private SavedFlightDetailController detailController;
     private GoBackController goBackController;
+    private CompareSavedFlightsController compareController;
+    private JButton compareButton;
 
     public SavedFlightsView(SavedFlightsViewModel viewModel, ViewManagerModel viewManagerModel) {
         this.viewModel = viewModel;
@@ -60,6 +63,7 @@ public class SavedFlightsView extends JPanel implements PropertyChangeListener {
         add(title);
 
         String[] columns = {
+                "Select",
                 "Airline", "Flight No",
                 "Aircraft",
                 "Dep Airport", "Dep Time",
@@ -74,9 +78,18 @@ public class SavedFlightsView extends JPanel implements PropertyChangeListener {
         model = new DefaultTableModel(columns, 0) {
             @Override
             public boolean isCellEditable(int r, int c) {
-                return c == 11; // only Details column
+                return c == 0 || c == 12;
+            }
+
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                if (columnIndex == 0) {
+                    return Boolean.class;
+                }
+                return String.class;
             }
         };
+
 
         table = new JTable(model);
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -86,7 +99,7 @@ public class SavedFlightsView extends JPanel implements PropertyChangeListener {
         add(scroll);
 
         // add renderer/editor for Details btn
-        TableColumn col = table.getColumnModel().getColumn(11);
+        TableColumn col = table.getColumnModel().getColumn(12);
         col.setCellRenderer(new ButtonRenderer());
         col.setCellEditor(new ButtonEditor(new JCheckBox()));
 
@@ -94,15 +107,60 @@ public class SavedFlightsView extends JPanel implements PropertyChangeListener {
         back.addActionListener(e -> {
             if (goBackController != null) goBackController.execute("logged in");
         });
+
+        compareButton = new JButton("Compare Flights");
+        compareButton.addActionListener(e -> handleCompareButtonClicked());
+
         JPanel p = new JPanel();
         p.add(back);
+        p.add(compareButton);
         add(p);
+
+    }
+
+    private void handleCompareButtonClicked() {
+        if (compareController == null) {
+            JOptionPane.showMessageDialog(this, "Compare controller not set.");
+            return;
+        }
+
+        List<FlightDetail> flights = viewModel.getFlights();
+        if (flights == null || flights.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No saved flights to compare.");
+            return;
+        }
+
+        java.util.List<Integer> selectedRows = new java.util.ArrayList<>();
+
+        for (int i = 0; i < model.getRowCount(); i++) {
+            Object value = model.getValueAt(i, 0);
+            if (Boolean.TRUE.equals(value)) {
+                selectedRows.add(i);
+            }
+        }
+
+        if (selectedRows.size() != 2) {
+            JOptionPane.showMessageDialog(this, "Please select exactly two flights to compare.");
+            return;
+        }
+
+        int idx1 = selectedRows.get(0);
+        int idx2 = selectedRows.get(1);
+
+        FlightDetail f1 = flights.get(idx1);
+        FlightDetail f2 = flights.get(idx2);
+
+        compareController.execute(f1, f2);
+    }
+
+    public void setCompareSavedFlightsController(CompareSavedFlightsController c) {
+        this.compareController = c;
     }
 
     private void refreshEditor(List<FlightDetail> flights) {
         SavedFlightButtonEditor editor = new SavedFlightButtonEditor();
         editor.setDependencies(table, flights, detailController);
-        table.getColumnModel().getColumn(11).setCellEditor(editor);
+        table.getColumnModel().getColumn(12).setCellEditor(editor);
 
     }
 
@@ -118,6 +176,7 @@ public class SavedFlightsView extends JPanel implements PropertyChangeListener {
             String aircraft = seg.aircraft;
 
             Object[] row = {
+                    Boolean.FALSE,
                     airline,
                     flightNo,
                     aircraft,

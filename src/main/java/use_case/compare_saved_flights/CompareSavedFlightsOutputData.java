@@ -2,6 +2,9 @@ package use_case.compare_saved_flights;
 
 public class CompareSavedFlightsOutputData {
 
+    /**
+     * A summary of a flight that contains only the fields we want to compare.
+     */
     public static class FlightSummary {
         public final String airline;
         public final String flightNumber;
@@ -37,5 +40,6 @@ public class CompareSavedFlightsOutputData {
     }
 
     public FlightSummary getFirst() { return first; }
+
     public FlightSummary getSecond() { return second; }
 }
