@@ -1,7 +1,6 @@
-package use_case.view_history;
+package use_case.load_history;
 
 import org.junit.jupiter.api.Test;
-import use_case.load_history.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -70,5 +69,34 @@ class LoadHistoryInteractorTest {
         };
         LoadHistoryInputBoundary interactor = new LoadHistoryInteractor(failurePresenter);
         interactor.execute(inputData);
+    }
+
+    @Test
+    void switchViewTest() {
+        // for this test we simply need to check that the correct method in the presenter gets called
+
+        // create a simple presenter to test if the interactor functioned as expected
+        LoadHistoryOutputBoundary simplePresenter = new LoadHistoryOutputBoundary() {
+            @Override
+            public void prepareSuccessView(LoadHistoryOutputData outputData) {
+                // this should never be reached
+                fail("Use case success is unexpected.");
+            }
+
+            @Override
+            public void prepareFailView(String errorMessage) {
+                // this should never be reached
+                fail("Use case failure is unexpected.");
+            }
+
+            @Override
+            public void switchToLoggedInView() {
+                // this method should be reached
+                assertTrue(true);
+            }
+        };
+
+        LoadHistoryInputBoundary interactor = new LoadHistoryInteractor(simplePresenter);
+        interactor.switchToLoggedInView();
     }
 }

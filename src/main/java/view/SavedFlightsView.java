@@ -3,7 +3,7 @@ package view;
 import entity.FlightDetail;
 import entity.FlightDetail.SegmentDetail;
 import interface_adapter.saved_flights.SavedFlightsViewModel;
-import interface_adapter.flight_detail.FlightDetailController;
+import interface_adapter.saved_flights.SavedFlightDetailController;
 import interface_adapter.go_back.GoBackController;
 
 import javax.swing.*;
@@ -13,6 +13,8 @@ import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
+import interface_adapter.ViewManagerModel;
+import interface_adapter.go_back.GoBackController;
 import interface_adapter.ViewManagerModel;
 
 
@@ -28,7 +30,7 @@ public class SavedFlightsView extends JPanel implements PropertyChangeListener {
     private JTable table;
     private DefaultTableModel model;
 
-    private FlightDetailController detailController;
+    private SavedFlightDetailController detailController;
     private GoBackController goBackController;
 
     public SavedFlightsView(SavedFlightsViewModel viewModel, ViewManagerModel viewManagerModel) {
@@ -41,10 +43,13 @@ public class SavedFlightsView extends JPanel implements PropertyChangeListener {
             System.out.println("[SavedFlightsView] ViewManagerModel event: "
                     + evt.getPropertyName() + " new=" + evt.getNewValue());
 
-            if ("state".equals(evt.getPropertyName()) &&
-                    viewName.equals(evt.getNewValue())) {
-                System.out.println("[SavedFlightsView] ACTIVATED!");
-                this.setVisible(true);
+            if ("state".equals(evt.getPropertyName())) {
+                boolean active = viewName.equals(evt.getNewValue());
+                this.setVisible(active);
+
+                if (active) {
+                    System.out.println("[SavedFlightsView] ACTIVATED!");
+                }
             }
         });
 
@@ -138,7 +143,7 @@ public class SavedFlightsView extends JPanel implements PropertyChangeListener {
         updateTable(viewModel.getFlights());
     }
 
-    public void setFlightDetailController(FlightDetailController c) {
+    public void setFlightDetailController(SavedFlightDetailController c) {
         this.detailController = c;
     }
 

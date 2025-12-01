@@ -1,9 +1,8 @@
 package view;
 
-import entity.Flight;
 import entity.FlightDetail;
 import entity.FlightDetail.SegmentDetail;
-import interface_adapter.flight_detail.FlightDetailController;
+import interface_adapter.saved_flights.SavedFlightDetailController;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
@@ -15,9 +14,11 @@ public class SavedFlightButtonEditor extends AbstractCellEditor implements Table
     private final JButton button = new JButton();
     private JTable table;
     private List<FlightDetail> flights;
-    private FlightDetailController controller;
+    private SavedFlightDetailController controller;
 
-    public void setDependencies(JTable table, List<FlightDetail> flights, FlightDetailController controller) {
+    public void setDependencies(JTable table,
+                                List<FlightDetail> flights,
+                                SavedFlightDetailController controller) {
         this.table = table;
         this.flights = flights;
         this.controller = controller;
@@ -52,7 +53,6 @@ public class SavedFlightButtonEditor extends AbstractCellEditor implements Table
 
             controller.execute(flight.Id);
         });
-
 
         return button;
     }

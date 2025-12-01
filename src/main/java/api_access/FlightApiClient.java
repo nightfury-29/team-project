@@ -1,17 +1,15 @@
-package data_access;
+package api_access;
 
-import api_access.AmadeusRawObject;
 import entity.Flight;
-import use_case.find_flight.FindFlightUserDataAccessInterface;
+import use_case.find_flight.FindFlightApiAccessInterface;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
 
 
-public class InMemoryFlightDataAccessObject implements FindFlightUserDataAccessInterface {
+public class FlightApiClient implements FindFlightApiAccessInterface {
 
     private final Map<String, List<Flight>> flights = new HashMap<>();
 
