@@ -168,23 +168,27 @@ public class SavedFlightsView extends JPanel implements PropertyChangeListener {
         model.setRowCount(0);
 
         for (FlightDetail f : flights) {
-            if (f.segments == null || f.segments.isEmpty()) continue;
-            SegmentDetail seg = f.segments.get(0);
+            if (f.segments == null || f.segments.isEmpty()) {
+                continue;
+            }
 
-            String airline = seg.carrierCode;
-            String flightNo = seg.flightNumber;
-            String aircraft = seg.aircraft;
+            SegmentDetail firstSeg = f.segments.get(0);
+            SegmentDetail lastSeg = f.segments.get(f.segments.size() - 1);
+
+            String airline = firstSeg.carrierCode;
+            String flightNo = firstSeg.flightNumber;
+            String aircraft = firstSeg.aircraft;
 
             Object[] row = {
                     Boolean.FALSE,
                     airline,
                     flightNo,
                     aircraft,
-                    seg.departureAirport,
-                    seg.departureTime,
-                    seg.arrivalAirport,
-                    seg.arrivalTime,
-                    seg.duration,
+                    firstSeg.departureAirport,
+                    firstSeg.departureTime,
+                    lastSeg.arrivalAirport,
+                    lastSeg.arrivalTime,
+                    firstSeg.duration,
                     f.price.total + " " + f.price.currency,
                     f.fareOption,
                     f.numberOfBookableSeats,
@@ -195,6 +199,7 @@ public class SavedFlightsView extends JPanel implements PropertyChangeListener {
 
         refreshEditor(flights);
     }
+
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
