@@ -349,31 +349,32 @@ public class AppBuilder {
     }
     public AppBuilder addSavedFlightsView() {
 
-        // 1. Create ViewModel
         this.savedFlightsViewModel = new SavedFlightsViewModel();
 
-        // 2. Create Presenter
         SavedFlightsPresenter savedFlightsPresenter =
                 new SavedFlightsPresenter(this.savedFlightsViewModel, viewManagerModel);
 
-        // 3. Create Interactor
         SaveFlightDataAccessInterface dao = new SaveFlightDataAccessObject();
+
         SavedFlightsInteractor savedFlightsInteractor =
                 new SavedFlightsInteractor(dao, savedFlightsPresenter);
 
-        // 4. Create Controller
         SeeSavedFlightsController savedFlightsController =
                 new SeeSavedFlightsController(savedFlightsInteractor);
 
-        // 5. Register panel to CardLayout
         SavedFlightsView savedFlightsView =
                 new SavedFlightsView(this.savedFlightsViewModel, this.viewManagerModel);
 
         cardPanel.add(savedFlightsView, this.savedFlightsViewModel.getViewName());
 
+        GoBackOutputBoundary goBackPresenter = new GoBackPresenter(viewManagerModel);
+        GoBackInputBoundary goBackInteractor = new GoBackInteractor(goBackPresenter);
+        GoBackController goBackController = new GoBackController(goBackInteractor);
+
+        savedFlightsView.setGoBackController(goBackController);
+
         return this;
     }
-
 
 
 

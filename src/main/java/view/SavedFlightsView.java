@@ -14,6 +14,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 import interface_adapter.ViewManagerModel;
+import interface_adapter.go_back.GoBackController;
+import interface_adapter.ViewManagerModel;
 
 
 /**
@@ -41,10 +43,13 @@ public class SavedFlightsView extends JPanel implements PropertyChangeListener {
             System.out.println("[SavedFlightsView] ViewManagerModel event: "
                     + evt.getPropertyName() + " new=" + evt.getNewValue());
 
-            if ("state".equals(evt.getPropertyName()) &&
-                    viewName.equals(evt.getNewValue())) {
-                System.out.println("[SavedFlightsView] ACTIVATED!");
-                this.setVisible(true);
+            if ("state".equals(evt.getPropertyName())) {
+                boolean active = viewName.equals(evt.getNewValue());
+                this.setVisible(active);
+
+                if (active) {
+                    System.out.println("[SavedFlightsView] ACTIVATED!");
+                }
             }
         });
 
