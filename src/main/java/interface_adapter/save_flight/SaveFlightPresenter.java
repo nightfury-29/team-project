@@ -1,12 +1,10 @@
 package interface_adapter.save_flight;
 
+import javax.swing.JOptionPane;
+
+import interface_adapter.ViewManagerModel;
 import use_case.save_flight.SaveFlightOutputBoundary;
 import use_case.save_flight.SaveFlightOutputData;
-//import view.FlightDetailView;
-import interface_adapter.ViewManagerModel;
-import interface_adapter.save_flight.SaveFlightViewModel;
-
-import javax.swing.*;
 
 public class SaveFlightPresenter implements SaveFlightOutputBoundary {
 
@@ -23,7 +21,6 @@ public class SaveFlightPresenter implements SaveFlightOutputBoundary {
         if (saveFlightViewModel != null) {
             saveFlightViewModel.setMessage(outputData.getMessage());
             saveFlightViewModel.firePropertyChanged();
-
 
             // Update the ViewManagerModel state
             viewManagerModel.setState(SaveFlightViewModel.getViewName());

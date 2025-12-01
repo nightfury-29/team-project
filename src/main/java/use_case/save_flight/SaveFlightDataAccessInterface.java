@@ -1,8 +1,8 @@
 package use_case.save_flight;
 
-import entity.FlightDetail;
 import java.util.List;
 
+import entity.FlightDetail;
 
 /**
  * DAO interface for the Save Flight Use Case.
@@ -24,10 +24,10 @@ public interface SaveFlightDataAccessInterface {
     void saveFlightForUser(String username, FlightDetail detail);
 
     /**
-     * Returns the saved flights for a given user
+     * Returns the saved flights for a given user.
      * @param username the user to get the flights for, returns empty list if no flights available
+     * @return a list of FlightDetail for a given user
      */
     List<FlightDetail> getSavedFlights(String username);
 }
-
 

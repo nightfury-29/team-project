@@ -1,20 +1,20 @@
 package use_case.save_flight;
 
-import entity.FlightDetail;
+import data_transfer_objects.DTOToFlightDetailMapper;
 import data_transfer_objects.FlightDetailDataTransferObject;
 import data_transfer_objects.FlightDetailToDTOMapper;
-import data_transfer_objects.DTOToFlightDetailMapper;
-import data_access.FileUserDataAccessObject; // assume this exists
+import entity.FlightDetail;
+import use_case.logout.LogoutUserDataAccessInterface;
 
 public class SaveFlightInteractor implements SaveFlightInputBoundary {
 
     private final SaveFlightDataAccessInterface flightGateway;
-    private final FileUserDataAccessObject userGateway;
+    private final LogoutUserDataAccessInterface userGateway;
     private final SaveFlightOutputBoundary presenter;
 
     public SaveFlightInteractor(
             SaveFlightDataAccessInterface flightGateway,
-            FileUserDataAccessObject userGateway,
+            LogoutUserDataAccessInterface userGateway,
             SaveFlightOutputBoundary presenter) {
         this.flightGateway = flightGateway;
         this.userGateway = userGateway;
@@ -28,20 +28,19 @@ public class SaveFlightInteractor implements SaveFlightInputBoundary {
             return;
         }
 
-        FlightDetailDataTransferObject detailDTO = inputData.getFlightDetail();
-        DTOToFlightDetailMapper mapper = new DTOToFlightDetailMapper();
+        final FlightDetailDataTransferObject detaildto = inputData.getFlightDetail();
+        final DTOToFlightDetailMapper mapper = new DTOToFlightDetailMapper();
 
-        FlightDetail detail = mapper.map(detailDTO);
+        final FlightDetail detail = mapper.map(detaildto);
 
-
-        String flightId = inputData.getFlightId();
+        final String flightId = inputData.getFlightId();
 
         if (flightId == null || flightId.isEmpty()) {
             presenter.prepareFailView(new SaveFlightOutputData(false, "Flight has no ID; cannot save."));
             return;
         }
 
-        String username = userGateway.getCurrentUsername();
+        final String username = userGateway.getCurrentUsername();
         if (username == null || username.isEmpty()) {
             presenter.prepareFailView(new SaveFlightOutputData(false, "No logged-in user found."));
             return;
@@ -55,15 +54,17 @@ public class SaveFlightInteractor implements SaveFlightInputBoundary {
 
             flightGateway.saveFlightForUser(username, detail);
 
-            FlightDetailToDTOMapper mapperDTO = new FlightDetailToDTOMapper();
-            FlightDetailDataTransferObject detailDto = mapperDTO.map(detail);
+            final FlightDetailToDTOMapper mapperdtotemp = new FlightDetailToDTOMapper();
+            final FlightDetailDataTransferObject detailDto = mapperdtotemp.map(detail);
 
             presenter.prepareSuccessView(
                     new SaveFlightOutputData(true, "Flight saved successfully!", detailDto)
             );
-        } catch (Exception e) {
-            e.printStackTrace();
-            presenter.prepareFailView(new SaveFlightOutputData(false, "Failed to save flight: " + e.getMessage()));
+        }
+        
+        catch (Exception ex) {
+            ex.printStackTrace();
+            presenter.prepareFailView(new SaveFlightOutputData(false, "Failed to save flight: " + ex.getMessage()));
         }
     }
 }

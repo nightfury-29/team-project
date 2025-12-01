@@ -1,15 +1,5 @@
 package data_access;
 
-import entity.FlightDetail;
-import entity.FlightDetail.Price;
-import entity.FlightDetail.SegmentDetail;
-import entity.FlightDetail.Baggage;
-import entity.FlightDetail.Amenity;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-import use_case.save_flight.SaveFlightDataAccessInterface;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -17,12 +7,25 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import entity.FlightDetail;
+import entity.FlightDetail.Amenity;
+import entity.FlightDetail.Baggage;
+import entity.FlightDetail.Price;
+import entity.FlightDetail.SegmentDetail;
+import use_case.save_flight.SaveFlightDataAccessInterface;
+
 public class SaveFlightDataAccessObject implements SaveFlightDataAccessInterface {
 
     private final String basePath = "saved_flights/";
+    private final String flightString = "flights";
+    private final String idString = "id";
+    private final Integer indentFactor = 4;
 
     public SaveFlightDataAccessObject() {
-        File folder = new File(basePath);
+        final File folder = new File(basePath);
         if (!folder.exists()) {
             folder.mkdirs();
         }
@@ -33,49 +36,51 @@ public class SaveFlightDataAccessObject implements SaveFlightDataAccessInterface
     }
 
     private JSONObject loadUserJson(String username) {
-        File file = getUserFile(username);
+        final File file = getUserFile(username);
 
         if (!file.exists()) {
-            return new JSONObject().put("flights", new JSONArray());
+            return new JSONObject().put(flightString, new JSONArray());
         }
 
         try {
-            String content = Files.readString(file.toPath());
+            final String content = Files.readString(file.toPath());
             return new JSONObject(content);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return new JSONObject().put("flights", new JSONArray());
+        }
+        catch (Exception ex) {
+            return new JSONObject().put(flightString, new JSONArray());
         }
     }
 
     private void saveUserJson(String username, JSONObject json) {
         try (FileWriter writer = new FileWriter(getUserFile(username))) {
-            writer.write(json.toString(4));
-        } catch (IOException e) {
-            e.printStackTrace();
+            writer.write(json.toString(indentFactor));
+        }
+        catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 
     @Override
     public boolean flightExistsForUser(String username, String flightId) {
-        JSONObject json = loadUserJson(username);
-        JSONArray arr = json.getJSONArray("flights");
+        final JSONObject json = loadUserJson(username);
+        final JSONArray arr = json.getJSONArray(flightString);
+        boolean torf = false;
 
         for (int i = 0; i < arr.length(); i++) {
-            JSONObject obj = arr.getJSONObject(i);
-            if (obj.getString("id").equals(flightId)) {
-                return true;
+            final JSONObject obj = arr.getJSONObject(i);
+            if (obj.getString(idString).equals(flightId)) {
+                torf = true;
             }
         }
-        return false;
+        return torf;
     }
 
     @Override
     public void saveFlightForUser(String username, FlightDetail detail) {
-        JSONObject json = loadUserJson(username);
-        JSONArray arr = json.getJSONArray("flights");
+        final JSONObject json = loadUserJson(username);
+        final JSONArray arr = json.getJSONArray(flightString);
 
-        JSONObject converted = convertFlightDetailToJson(detail);
+        final JSONObject converted = convertFlightDetailToJson(detail);
         arr.put(converted);
 
         saveUserJson(username, json);
@@ -83,40 +88,39 @@ public class SaveFlightDataAccessObject implements SaveFlightDataAccessInterface
 
     @Override
     public List<FlightDetail> getSavedFlights(String username) {
-        JSONObject json = loadUserJson(username);
-        JSONArray arr = json.getJSONArray("flights");
+        final JSONObject json = loadUserJson(username);
+        final JSONArray arr = json.getJSONArray(flightString);
 
-        List<FlightDetail> list = new ArrayList<>();
+        final List<FlightDetail> list = new ArrayList<>();
         for (int i = 0; i < arr.length(); i++) {
-            JSONObject obj = arr.getJSONObject(i);
+            final JSONObject obj = arr.getJSONObject(i);
             list.add(convertJsonToFlightDetail(obj));
         }
         return list;
     }
 
-
     /* ======================================================================
        JSON CONVERSION HELPERS
        ====================================================================== */
 
-    private JSONObject convertFlightDetailToJson(FlightDetail d) {
-        JSONObject obj = new JSONObject();
+    private JSONObject convertFlightDetailToJson(FlightDetail det) {
+        final JSONObject obj = new JSONObject();
 
-        obj.put("id", d.id);
-        obj.put("numberOfBookableSeats", d.numberOfBookableSeats);
+        obj.put(idString, det.id);
+        obj.put("numberOfBookableSeats", det.numberOfBookableSeats);
 
         // Price
-        JSONObject priceJson = new JSONObject();
-        priceJson.put("total", d.price.total);
-        priceJson.put("currency", d.price.currency);
+        final JSONObject priceJson = new JSONObject();
+        priceJson.put("total", det.price.total);
+        priceJson.put("currency", det.price.currency);
         obj.put("price", priceJson);
 
-        obj.put("fareOption", d.fareOption);
+        obj.put("fareOption", det.fareOption);
 
         // Segments array
-        JSONArray segmentsArray = new JSONArray();
-        for (SegmentDetail seg : d.segments) {
-            JSONObject segJson = new JSONObject();
+        final JSONArray segmentsArray = new JSONArray();
+        for (SegmentDetail seg : det.segments) {
+            final JSONObject segJson = new JSONObject();
 
             segJson.put("departureAirport", seg.departureAirport);
             segJson.put("departureTime", seg.departureTime);
@@ -133,15 +137,15 @@ public class SaveFlightDataAccessObject implements SaveFlightDataAccessInterface
             segJson.put("cabinClass", seg.cabinClass);
 
             // Baggage
-            JSONObject baggageJson = new JSONObject();
+            final JSONObject baggageJson = new JSONObject();
             baggageJson.put("checkedBags", seg.baggage.checkedBags);
             baggageJson.put("cabinBags", seg.baggage.cabinBags);
             segJson.put("baggage", baggageJson);
 
             // Amenities
-            JSONArray amenitiesArray = new JSONArray();
+            final JSONArray amenitiesArray = new JSONArray();
             for (Amenity a : seg.amenities) {
-                JSONObject aJson = new JSONObject();
+                final JSONObject aJson = new JSONObject();
                 aJson.put("description", a.description);
                 aJson.put("amenityType", a.amenityType);
                 aJson.put("isChargeable", a.isChargeable);
@@ -157,35 +161,34 @@ public class SaveFlightDataAccessObject implements SaveFlightDataAccessInterface
         return obj;
     }
 
-
     private FlightDetail convertJsonToFlightDetail(JSONObject obj) {
 
         // Extract price
-        JSONObject priceJson = obj.getJSONObject("price");
-        Price price = new Price(
+        final JSONObject priceJson = obj.getJSONObject("price");
+        final Price price = new Price(
                 priceJson.getDouble("total"),
                 priceJson.getString("currency")
         );
 
         // Extract segments
-        JSONArray segArr = obj.getJSONArray("segments");
-        List<SegmentDetail> segments = new ArrayList<>();
+        final JSONArray segArr = obj.getJSONArray("segments");
+        final List<SegmentDetail> segments = new ArrayList<>();
 
         for (int i = 0; i < segArr.length(); i++) {
-            JSONObject seg = segArr.getJSONObject(i);
+            final JSONObject seg = segArr.getJSONObject(i);
 
             // Baggage
-            JSONObject b = seg.getJSONObject("baggage");
-            Baggage baggage = new Baggage(
+            final JSONObject b = seg.getJSONObject("baggage");
+            final Baggage baggage = new Baggage(
                     b.getInt("checkedBags"),
                     b.getInt("cabinBags")
             );
 
             // Amenities
-            JSONArray aArr = seg.getJSONArray("amenities");
-            List<Amenity> amenities = new ArrayList<>();
+            final JSONArray aArr = seg.getJSONArray("amenities");
+            final List<Amenity> amenities = new ArrayList<>();
             for (int j = 0; j < aArr.length(); j++) {
-                JSONObject a = aArr.getJSONObject(j);
+                final JSONObject a = aArr.getJSONObject(j);
                 amenities.add(new Amenity(
                         a.getString("description"),
                         a.getString("amenityType"),
@@ -211,7 +214,7 @@ public class SaveFlightDataAccessObject implements SaveFlightDataAccessInterface
         }
 
         return new FlightDetail(
-                obj.getString("id"),
+                obj.getString(idString),
                 obj.getInt("numberOfBookableSeats"),
                 price,
                 obj.getString("fareOption"),

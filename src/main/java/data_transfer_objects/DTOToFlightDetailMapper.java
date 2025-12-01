@@ -1,8 +1,8 @@
 package data_transfer_objects;
 
-import entity.FlightDetail;
-
 import java.util.stream.Collectors;
+
+import entity.FlightDetail;
 
 public class DTOToFlightDetailMapper {
 
