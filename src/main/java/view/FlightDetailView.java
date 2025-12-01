@@ -62,12 +62,20 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
         buttonPanel.add(goback);
         goback.addActionListener(e -> {
             if (goBackController != null) {
-                goBackController.execute("flight results");
+                FlightDetailState state = fdViewModel.getState();
+                String target = state.getPreviousViewName();
+
+                if (target == null || target.isEmpty()) {
+                    target = "flight results";
+                }
+
+                goBackController.execute(target);
             }
         });
 
         buttonPanel.add(saveButton);
         add(buttonPanel, BorderLayout.SOUTH);
+
 
         saveButton.addActionListener(e -> {
             FlightDetailState state = fdViewModel.getState();
@@ -110,6 +118,13 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
 
             FlightDetailState state = fdViewModel.getState();
 
+            String prev = state.getPreviousViewName();
+            if ("saved flights".equals(prev)) {
+                saveButton.setVisible(false);
+            } else {
+                saveButton.setVisible(true);
+            }
+
             if (state.getErrorMessage() != null) {
                 JOptionPane.showMessageDialog(this, state.getErrorMessage());
                 return;
@@ -122,6 +137,7 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
                 renderDetail(detail);
             }
         }
+
     }
 
     private void renderEmpty() {
