@@ -22,14 +22,13 @@ public class FlightDetailPresenter implements FlightDetailOutputBoundary {
 
     @Override
     public void prepareSuccessView(FlightDetailOutputData outputData) {
-//        System.out.println("[DEBUG] Presenter success view called.");
 
         FlightDetailState fdState = fdViewModel.getState();
         fdState.setFlightDetail(outputData.getFlightDetail());
         fdState.setErrorMessage(null);
+        fdState.setPreviousViewName(flightResultsViewModel.getViewName());
         fdViewModel.firePropertyChange();
 
-        // Switch to the detail view
         viewManagerModel.setState(fdViewModel.getViewName());
         viewManagerModel.firePropertyChange();
     }

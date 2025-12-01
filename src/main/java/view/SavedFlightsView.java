@@ -3,7 +3,7 @@ package view;
 import entity.FlightDetail;
 import entity.FlightDetail.SegmentDetail;
 import interface_adapter.saved_flights.SavedFlightsViewModel;
-import interface_adapter.flight_detail.FlightDetailController;
+import interface_adapter.saved_flights.SavedFlightDetailController;
 import interface_adapter.go_back.GoBackController;
 
 import javax.swing.*;
@@ -30,7 +30,7 @@ public class SavedFlightsView extends JPanel implements PropertyChangeListener {
     private JTable table;
     private DefaultTableModel model;
 
-    private FlightDetailController detailController;
+    private SavedFlightDetailController detailController;
     private GoBackController goBackController;
 
     public SavedFlightsView(SavedFlightsViewModel viewModel, ViewManagerModel viewManagerModel) {
@@ -143,7 +143,7 @@ public class SavedFlightsView extends JPanel implements PropertyChangeListener {
         updateTable(viewModel.getFlights());
     }
 
-    public void setFlightDetailController(FlightDetailController c) {
+    public void setFlightDetailController(SavedFlightDetailController c) {
         this.detailController = c;
     }
 

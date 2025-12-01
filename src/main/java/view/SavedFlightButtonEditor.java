@@ -1,9 +1,8 @@
 package view;
 
-import entity.Flight;
 import entity.FlightDetail;
 import entity.FlightDetail.SegmentDetail;
-import interface_adapter.flight_detail.FlightDetailController;
+import interface_adapter.saved_flights.SavedFlightDetailController;
 
 import javax.swing.*;
 import javax.swing.table.TableCellEditor;
@@ -15,9 +14,11 @@ public class SavedFlightButtonEditor extends AbstractCellEditor implements Table
     private final JButton button = new JButton();
     private JTable table;
     private List<FlightDetail> flights;
-    private FlightDetailController controller;
+    private SavedFlightDetailController controller;
 
-    public void setDependencies(JTable table, List<FlightDetail> flights, FlightDetailController controller) {
+    public void setDependencies(JTable table,
+                                List<FlightDetail> flights,
+                                SavedFlightDetailController controller) {
         this.table = table;
         this.flights = flights;
         this.controller = controller;
@@ -35,24 +36,9 @@ public class SavedFlightButtonEditor extends AbstractCellEditor implements Table
             FlightDetail f = flights.get(row);
             if (f.segments == null || f.segments.isEmpty()) return;
 
-            SegmentDetail seg = f.segments.get(0);
-
-            Flight flight = new Flight(
-                    f.id,
-                    seg.departureAirport,
-                    seg.departureTime,
-                    seg.arrivalAirport,
-                    seg.arrivalTime,
-                    f.price.total,
-                    f.price.currency,
-                    seg.duration,
-                    seg.carrierCode,
-                    seg.aircraft
-            );
-
-            controller.execute(flight);
+            // 现在不再把它压缩成 Flight，而是直接把整个 FlightDetail 交给控制器
+            controller.execute(f);
         });
-
 
         return button;
     }
