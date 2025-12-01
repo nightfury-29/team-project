@@ -1,4 +1,4 @@
-package api_access;
+package api_access_test;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -15,7 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AmadeusRawJsonDemo {
+public class AmadeusRawJsonDemo2 {
 
     static class FlightSummary {
         final String depAirport, depTime;

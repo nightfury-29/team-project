@@ -43,7 +43,7 @@ import use_case.view_history.ViewHistoryOutputBoundary;
 import view.*;
 
 import data_access.FileSearchHistoryDAO;
-import data_access.InMemoryFlightDataAccessObject;
+import api_access.FlightApiClient;
 import use_case.sort_flights.SortFlightsDataAccessInterface;
 import view.LoggedInView;
 import view.LoginView;
@@ -242,7 +242,7 @@ public class AppBuilder {
     public AppBuilder addFindFlightUseCase() {
         // --- Initialize DAOs ---
         // (We use InMemory for this example, but you could swap it)
-        FindFlightUserDataAccessInterface flightDataAccessObject = new InMemoryFlightDataAccessObject();
+        FindFlightApiAccessInterface flightDataAccessObject = new FlightApiClient();
 
 
         // --- Initialize Helpers ---
