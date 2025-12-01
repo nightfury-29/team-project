@@ -80,6 +80,7 @@ import interface_adapter.save_flight.SaveFlightPresenter;
 import interface_adapter.save_flight.SaveFlightViewModel;
 import use_case.save_flight.SaveFlightInputBoundary;
 import use_case.save_flight.SaveFlightInteractor;
+import use_case.save_flight.SaveFlightOutputBoundary;
 
 
 
@@ -176,6 +177,24 @@ public class AppBuilder {
 
         LoginController loginController = new LoginController(loginInteractor);
         loginView.setLoginController(loginController);
+        return this;
+    }
+
+    public AppBuilder addSaveFlightUseCase() {
+
+        SaveFlightDataAccessInterface saveFlightDAO = new SaveFlightDataAccessObject();
+
+        SaveFlightOutputBoundary saveFlightPresenter =
+                new SaveFlightPresenter(this.saveFlightViewModel, this.viewManagerModel);
+
+        SaveFlightInputBoundary saveFlightInteractor =
+                new SaveFlightInteractor(saveFlightDAO, this.userDataAccessObject, saveFlightPresenter);
+
+        SaveFlightController saveFlightController =
+                new SaveFlightController(saveFlightInteractor);
+
+        this.flightDetailView.setSaveFlightController(saveFlightController);
+
         return this;
     }
 
