@@ -1,6 +1,5 @@
 package use_case.find_flight;
 
-import data_access.InMemoryFlightDataAccessObject;
 import helpers.SearchInfoVerifier;
 import helpers.CityCodeConverter;
 import entity.FlightSearchInformation;
@@ -17,10 +16,10 @@ public class FindFlightInteractor implements FindFlightInputBoundary{
     private final FindFlightOutputBoundary flightPresenter;
     private final LogSearchInfoDataAccessInterface logSearchInfoDataObject;
     private final CityCodeConverter cityCodeConverter;
-    private final FindFlightUserDataAccessInterface flightUserDataAccessObject;
+    private final FindFlightApiAccessInterface flightUserDataAccessObject;
 
     public FindFlightInteractor(SearchInfoVerifier searchInfoVerifier, FindFlightOutputBoundary findFlightOutputBoundary,
-                                LogSearchInfoDataAccessInterface logSearchInfoDataAccessInterface, CityCodeConverter cityCodeConverter, FindFlightUserDataAccessInterface flightUserDataAccessObject) {
+                                LogSearchInfoDataAccessInterface logSearchInfoDataAccessInterface, CityCodeConverter cityCodeConverter, FindFlightApiAccessInterface flightUserDataAccessObject) {
         this.searchInfoVerifier = searchInfoVerifier;
         this.flightPresenter = findFlightOutputBoundary;
         this.logSearchInfoDataObject = logSearchInfoDataAccessInterface;

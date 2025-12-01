@@ -1,4 +1,5 @@
 package use_case.compare_saved_flights;
 
-public class CompareSavedFlightsOutputBoundary {
+public interface CompareSavedFlightsOutputBoundary {
+    void present(CompareSavedFlightsOutputData outputData);
 }

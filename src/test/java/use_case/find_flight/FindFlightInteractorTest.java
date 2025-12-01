@@ -15,7 +15,7 @@ import static org.mockito.Mockito.*;
 
 class FindFlightInteractorTest {
 
-    static final class RecordingFindFlightDaoStub implements FindFlightUserDataAccessInterface {
+    static final class RecordingFindFlightDaoStub implements FindFlightApiAccessInterface {
         private final List<Flight> flightsToReturn;
         private final RuntimeException toThrow;
 
@@ -55,14 +55,7 @@ class FindFlightInteractorTest {
     }
 
     private FindFlightInputData input(String from, String to, int day, String month, int year, String username) {
-        FindFlightInputData in = mock(FindFlightInputData.class);
-        when(in.getFrom()).thenReturn(from);
-        when(in.getTo()).thenReturn(to);
-        when(in.getDay()).thenReturn(day);
-        when(in.getMonth()).thenReturn(month);
-        when(in.getYear()).thenReturn(year);
-        when(in.getUsername()).thenReturn(username);
-        return in;
+        return new FindFlightInputData(username, from, to, String.valueOf(day), month, String.valueOf(year));
     }
 
     private Flight flight(String id, double price) {
@@ -205,8 +198,10 @@ class FindFlightInteractorTest {
 
         ArgumentCaptor<FindFlightOutputData> captor = ArgumentCaptor.forClass(FindFlightOutputData.class);
         verify(presenter).prepareSuccessView(captor.capture());
-        assertNotNull(captor.getValue());
 
+        FindFlightOutputData out =  captor.getValue();
+        assertNotNull(out);
+        assertEquals(flights, out.getFlights());
         verify(presenter, never()).prepareFailView(anyString());
     }
 
