@@ -28,7 +28,7 @@ public class ButtonEditor extends DefaultCellEditor {
                     Flight selectedFlight = flights.get(row);
                     if (flightDetailController != null) {
                         System.out.println("Button clicked, executing controller: " + selectedFlight);
-                        flightDetailController.execute(selectedFlight);
+                        flightDetailController.execute(selectedFlight.Id);
                     } else {
                         System.out.println("Controller is null!");
                     }
@@ -69,7 +69,7 @@ public class ButtonEditor extends DefaultCellEditor {
                 Flight selectedFlight = flights.get(selectedRow);
 
                 if (flightDetailController != null) {
-                    flightDetailController.execute(selectedFlight);
+                    flightDetailController.execute(selectedFlight.Id);
                 }
             }
         }

@@ -9,5 +9,3 @@ public class FlightDetailViewModel extends ViewModel<FlightDetailState> {
         setState(new FlightDetailState());
     }
 }
-
-

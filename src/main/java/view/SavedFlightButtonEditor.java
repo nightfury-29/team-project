@@ -50,7 +50,7 @@ public class SavedFlightButtonEditor extends AbstractCellEditor implements Table
                     seg.aircraft
             );
 
-            controller.execute(flight);
+            controller.execute(flight.Id);
         });
 
 

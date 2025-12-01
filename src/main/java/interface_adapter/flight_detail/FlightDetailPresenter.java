@@ -5,7 +5,6 @@ import interface_adapter.flight_results.FlightResultsViewModel;
 import use_case.flight_detail.FlightDetailOutputBoundary;
 import use_case.flight_detail.FlightDetailOutputData;
 
-
 public class FlightDetailPresenter implements FlightDetailOutputBoundary {
 
     private final FlightDetailViewModel fdViewModel;
@@ -24,7 +23,7 @@ public class FlightDetailPresenter implements FlightDetailOutputBoundary {
     public void prepareSuccessView(FlightDetailOutputData outputData) {
 //        System.out.println("[DEBUG] Presenter success view called.");
 
-        FlightDetailState fdState = fdViewModel.getState();
+        final FlightDetailState fdState = fdViewModel.getState();
         fdState.setFlightDetail(outputData.getFlightDetail());
         fdState.setErrorMessage(null);
         fdViewModel.firePropertyChange();
@@ -37,12 +36,10 @@ public class FlightDetailPresenter implements FlightDetailOutputBoundary {
     @Override
     public void prepareFailView(String errorMessage) {
 
-        FlightDetailState fdState = fdViewModel.getState();
+        final FlightDetailState fdState = fdViewModel.getState();
         fdState.setErrorMessage(errorMessage);
 
         viewManagerModel.setState(fdViewModel.getViewName());
         viewManagerModel.firePropertyChange();
     }
 }
-
-

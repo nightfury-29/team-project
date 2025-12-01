@@ -12,10 +12,8 @@ public class FlightDetailController {
         this.interactor = interactor;
     }
 
-    public void execute(Flight flight) {
-//        System.out.println("FlightDetailController.execute called with flight: " + flight);
-
-        FlightDetailInputData inputData = new FlightDetailInputData(flight);
+    public void execute(String flightId) {
+        final FlightDetailInputData inputData = new FlightDetailInputData(flightId);
         interactor.execute(inputData);
     }
 }

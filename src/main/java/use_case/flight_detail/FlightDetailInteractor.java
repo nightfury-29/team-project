@@ -19,20 +19,19 @@ public class FlightDetailInteractor implements FlightDetailInputBoundary {
 
     @Override
     public void execute(FlightDetailInputData inputData) {
-        System.out.println("[DEBUG] FlightDetailInteractor reached.");
-
+//        System.out.println("[DEBUG] FlightDetailInteractor reached.");
 
         try {
 
-            Flight flight = inputData.getFlight();
+            String flightId = inputData.getFlightId();
 
-            if (flight == null) {
+            if (flightId == null) {
                 flightDetailPresenter.prepareFailView("Error: Flight is null.");
                 return;
             }
 
             // --- Call data source to get the full flight detail ---
-            FlightDetail detail = flightDetailDataAccessObject.fetchDetail(flight);
+            FlightDetail detail = flightDetailDataAccessObject.fetchDetail(flightId);
 
             if (detail == null) {
                 flightDetailPresenter.prepareFailView("Could not retrieve flight details.");

@@ -9,6 +9,6 @@ public interface FlightDetailDataAccessInterface {
      * Fetch a rich FlightDetail object using the basic Flight.
      * This should call the Amadeus API again.
      */
-    FlightDetail fetchDetail(Flight flight);
+    FlightDetail fetchDetail(String flightId);
 }
 
