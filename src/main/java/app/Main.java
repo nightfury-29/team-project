@@ -12,6 +12,8 @@ public class Main {
                 .addFlightResultsView()
                 .addFlightDetailView()
                 .addViewingHistoryView()
+                .addSavedFlightsView()
+                .addCompareSavedFlightsView()
                 .addSignupUseCase()
                 .addLoginUseCase()
                 .addChangePasswordUseCase()
@@ -22,8 +24,8 @@ public class Main {
                 .addSaveFlightUseCase()
                 .addViewHistoryUseCase()
                 .addLoadHistoryUseCase()
-                .addSavedFlightsView()
                 .addSavedFlightsUseCase()
+                .addCompareSavedFlightsUseCase()
                 .build();
 
         application.pack();
