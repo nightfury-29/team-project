@@ -42,7 +42,8 @@ public class ViewHistoryInteractor implements ViewHistoryInputBoundary {
                 final String month = search.getMonth();
                 final String year = Integer.toString(search.getYear());
 
-                final ViewHistoryOutputDataItem outputDataItem = new ViewHistoryOutputDataItem(date, time, from, to, day, month, year);
+                final ViewHistoryOutputDataItem outputDataItem = new ViewHistoryOutputDataItem(date, time, from, to,
+                                                                                                    day, month, year);
                 data.add(outputDataItem);
             }
 
