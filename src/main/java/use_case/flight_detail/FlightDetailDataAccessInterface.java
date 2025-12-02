@@ -1,6 +1,5 @@
 package use_case.flight_detail;
 
-import entity.Flight;
 import entity.FlightDetail;
 
 public interface FlightDetailDataAccessInterface {

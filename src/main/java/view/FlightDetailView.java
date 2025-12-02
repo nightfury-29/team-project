@@ -1,28 +1,27 @@
 package view;
 
+import java.awt.*;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import javax.swing.*;
+
 import data_transfer_objects.FlightDetailDataTransferObject;
 import data_transfer_objects.FlightDetailDataTransferObject.AmenityDTO;
 import data_transfer_objects.FlightDetailDataTransferObject.BaggageDTO;
 import data_transfer_objects.FlightDetailDataTransferObject.SegmentDTO;
 import interface_adapter.flight_detail.FlightDetailController;
-import interface_adapter.flight_detail.FlightDetailFacade;
 import interface_adapter.flight_detail.FlightDetailState;
 import interface_adapter.flight_detail.FlightDetailViewModel;
 import interface_adapter.go_back.GoBackController;
 import interface_adapter.save_flight.SaveFlightController;
 import interface_adapter.save_flight.SaveFlightViewModel;
 
-import javax.swing.*;
-import java.awt.*;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 public class FlightDetailView extends JPanel implements PropertyChangeListener {
 
     private final String viewName = "flight detail";
     private final FlightDetailViewModel fdViewModel;
     private FlightDetailController controller;
-    private FlightDetailFacade facade;
     private GoBackController goBackController;
     private SaveFlightController sfcontroller;
     private final SaveFlightViewModel saveFlightViewModel;
@@ -32,8 +31,8 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
     private final JButton saveButton = new JButton("Save Flight");
     private final JButton goback = new JButton("Go Back");
 
-    public FlightDetailView(FlightDetailViewModel fdViewModel
-                            ,SaveFlightViewModel saveFlightViewModel) {
+    public FlightDetailView(FlightDetailViewModel fdViewModel,
+                            SaveFlightViewModel saveFlightViewModel) {
         this.fdViewModel = fdViewModel;
         this.saveFlightViewModel = saveFlightViewModel;
         fdViewModel.addPropertyChangeListener(this);
@@ -74,10 +73,9 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
         buttonPanel.add(saveButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
-
         saveButton.addActionListener(e -> {
-            FlightDetailState state = fdViewModel.getState();
-            FlightDetailDataTransferObject detail = state.getFlightDetail();
+            final FlightDetailState state = fdViewModel.getState();
+            final FlightDetailDataTransferObject detail = state.getFlightDetail();
 
             if (detail == null) {
                 JOptionPane.showMessageDialog(this, "No flight loaded.");
@@ -87,12 +85,11 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
             sfcontroller.handleSaveButton(detail);
         });
 
-
         renderEmpty();
     }
 
-    public void setFacade(FlightDetailFacade facade) {
-        this.facade = facade;
+    public void setController(FlightDetailController controller) {
+        this.controller = controller;
     }
 
     public JButton getSaveButton() { return saveButton; }
@@ -104,7 +101,7 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
         if ("saveFlightResult".equals(evt.getPropertyName())) {
 
             // Get message from the ViewModel
-            String message = saveFlightViewModel.getMessage();
+            final String message = saveFlightViewModel.getMessage();
             JOptionPane.showMessageDialog(this, message);
 
             return; // Don't fall through to flight rendering
@@ -114,9 +111,9 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
         // --------- FLIGHT DETAIL EVENTS ---------
         if ("state".equals(evt.getPropertyName())) {
 
-            FlightDetailState state = fdViewModel.getState();
+            final FlightDetailState state = fdViewModel.getState();
 
-            String prev = state.getPreviousViewName();
+            final String prev = state.getPreviousViewName();
             if ("saved flights".equals(prev)) {
                 saveButton.setVisible(false);
             } else {
@@ -135,7 +132,6 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
                 renderDetail(detail);
             }
         }
-
     }
 
     private void renderEmpty() {
@@ -167,7 +163,7 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
         addTitle("Flight Segments");
 
         for (int i = 0; i < fd.segments.size(); i++) {
-            SegmentDTO seg = fd.segments.get(i);
+            final SegmentDTO seg = fd.segments.get(i);
 
             addSubtitle("Segment " + (i + 1));
 
@@ -184,7 +180,7 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
             addLine("Cabin Class: " + seg.cabinClass);
 
             // Baggage
-            BaggageDTO bag = seg.baggage;
+            final BaggageDTO bag = seg.baggage;
             addLine("Checked Bags: " + bag.checkedBags);
             addLine("Cabin Bags: " + bag.cabinBags);
 
@@ -193,7 +189,7 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
                 addSubtitle("Amenities:");
 
                 for (AmenityDTO am : seg.amenities) {
-                    String chargeInfo = am.isChargeable ? "(Extra)" : "(Included)";
+                    final String chargeInfo = am.isChargeable ? "(Extra)" : "(Included)";
                     addSmall("- " + am.description + " / " + am.amenityType + " " + chargeInfo);
                 }
             }
@@ -235,7 +231,7 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
 
     private void addSeparator() {
         contentPanel.add(Box.createVerticalStrut(8));
-        JSeparator sep = new JSeparator();
+        final JSeparator sep = new JSeparator();
         sep.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1));
         contentPanel.add(sep);
         contentPanel.add(Box.createVerticalStrut(8));
@@ -249,7 +245,7 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
     private String formatDuration(String iso) {
         if (iso == null) return "-";
         try {
-            String clean = iso.replace("PT", "");
+            final String clean = iso.replace("PT", "");
             int h = 0, m = 0;
             if (clean.contains("H")) {
                 h = Integer.parseInt(clean.substring(0, clean.indexOf("H")));

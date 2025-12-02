@@ -6,7 +6,6 @@ import interface_adapter.flight_results.FlightResultsViewModel;
 import interface_adapter.go_back.GoBackController;
 import interface_adapter.sort_flights.SortFlightsController;
 import interface_adapter.flight_detail.FlightDetailController;
-import interface_adapter.flight_detail.FlightDetailFacade;
 import javax.swing.table.TableColumn;
 
 import javax.swing.*;
@@ -43,8 +42,6 @@ public class FlightResultsView extends JPanel implements ActionListener, Propert
 
     private JTable flightTable;
     private DefaultTableModel tableModel;
-
-    private FlightDetailFacade flightDetailFacade;
 
     public FlightResultsView(FlightResultsViewModel flightResultsViewModel) {
         this.flightResultsViewModel = flightResultsViewModel;
@@ -193,11 +190,6 @@ public class FlightResultsView extends JPanel implements ActionListener, Propert
         refreshButtonEditor();
     }
 
-    public void setFlightDetailFacade(FlightDetailFacade facade) {
-        this.flightDetailFacade = facade;
-        refreshButtonEditor();
-    }
-
     private void refreshButtonEditor() {
         TableColumn detailsColumn = flightTable.getColumnModel().getColumn(11);
 
@@ -205,7 +197,7 @@ public class FlightResultsView extends JPanel implements ActionListener, Propert
         editor.setDependencies(
                 flightTable,
                 flightResultsViewModel.getState().getFlights(),
-                flightDetailFacade
+                flightDetailController
         );
 
         detailsColumn.setCellEditor(editor);

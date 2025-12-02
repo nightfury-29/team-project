@@ -1,10 +1,8 @@
 package use_case.flight_detail;
 
-import entity.Flight;
-import entity.FlightDetail;
 import data_transfer_objects.FlightDetailDataTransferObject;
-import data_transfer_objects.DTOToFlightDetailMapper;
 import data_transfer_objects.FlightDetailToDTOMapper;
+import entity.FlightDetail;
 
 public class FlightDetailInteractor implements FlightDetailInputBoundary {
 
@@ -23,7 +21,7 @@ public class FlightDetailInteractor implements FlightDetailInputBoundary {
 
         try {
 
-            String flightId = inputData.getFlightId();
+            final String flightId = inputData.getFlightId();
 
             if (flightId == null) {
                 flightDetailPresenter.prepareFailView("Error: Flight is null.");
@@ -31,20 +29,21 @@ public class FlightDetailInteractor implements FlightDetailInputBoundary {
             }
 
             // --- Call data source to get the full flight detail ---
-            FlightDetail detail = flightDetailDataAccessObject.fetchDetail(flightId);
+            final FlightDetail detail = flightDetailDataAccessObject.fetchDetail(flightId);
 
             if (detail == null) {
                 flightDetailPresenter.prepareFailView("Could not retrieve flight details.");
                 return;
             }
 
-            FlightDetailToDTOMapper mapper = new FlightDetailToDTOMapper();
-            FlightDetailDataTransferObject outputDataDetail = mapper.map(detail);
+            final FlightDetailToDTOMapper mapper = new FlightDetailToDTOMapper();
+            final FlightDetailDataTransferObject outputDataDetail = mapper.map(detail);
 
-            FlightDetailOutputData outputData = new FlightDetailOutputData(outputDataDetail);
+            final FlightDetailOutputData outputData = new FlightDetailOutputData(outputDataDetail);
             flightDetailPresenter.prepareSuccessView(outputData);
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             flightDetailPresenter.prepareFailView("An error occurred: " + e.getMessage());
             e.printStackTrace();
         }

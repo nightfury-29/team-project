@@ -1,7 +1,5 @@
 package use_case.flight_detail;
 
-import entity.Flight;
-
 public class FlightDetailInputData {
 
     private final String flightId;

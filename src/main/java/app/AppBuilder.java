@@ -66,7 +66,6 @@ import use_case.sort_flights.SortFlightsOutputBoundary;
 
 import interface_adapter.flight_detail.FlightDetailController;
 import interface_adapter.flight_detail.FlightDetailPresenter;
-import interface_adapter.flight_detail.FlightDetailFacade;
 import use_case.flight_detail.FlightDetailInputBoundary;
 import use_case.flight_detail.FlightDetailInteractor;
 
@@ -354,31 +353,23 @@ public class AppBuilder {
         final FlightDetailController controller =
                 new FlightDetailController(flightDetailInteractor);
 
-        final FlightDetailFacade flightDetailFacade =
-                new FlightDetailFacade(
-                        controller,
-                        presenter,
-                        flightDetailViewModel,
-                        viewManagerModel
-                );
-
-        this.flightDetailView.setFacade(flightDetailFacade);
-        if (this.flightResultsView != null) {
-            this.flightResultsView.setFlightDetailFacade(flightDetailFacade);
-        }
+        flightDetailView.setController(controller);
 
         if (this.flightResultsView != null) {
             this.flightResultsView.setFlightDetailController(controller);
         }
 
         final GoBackOutputBoundary goBackPresenter = new GoBackPresenter(viewManagerModel);
-        final GoBackInputBoundary goBackInteractor = new GoBackInteractor(goBackPresenter);
-        final GoBackController goBackController = new GoBackController(goBackInteractor);
-        flightDetailView.setGoBackController(goBackController);
 
+        final GoBackInputBoundary goBackInteractor = new GoBackInteractor(goBackPresenter);
+
+        final GoBackController goBackController = new GoBackController(goBackInteractor);
+
+        flightDetailView.setGoBackController(goBackController);
 
         return this;
     }
+
     public AppBuilder addSavedFlightsView() {
 
         this.savedFlightsViewModel = new SavedFlightsViewModel();
