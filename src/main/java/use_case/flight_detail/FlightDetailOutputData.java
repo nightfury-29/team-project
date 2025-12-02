@@ -1,10 +1,10 @@
 package use_case.flight_detail;
 
-//import entity.FlightDetail;
 import data_transfer_objects.FlightDetailDataTransferObject;
 
 public class FlightDetailOutputData {
     private final FlightDetailDataTransferObject flightDetail;
+
     public FlightDetailOutputData(FlightDetailDataTransferObject flightDetail) {
         this.flightDetail = flightDetail;
     }

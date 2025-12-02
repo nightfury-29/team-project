@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import entity.Flight;
 import interface_adapter.flight_detail.FlightDetailController;
+import interface_adapter.flight_detail.FlightDetailFacade;
 
 public class ButtonEditor extends DefaultCellEditor {
     private JButton button;
@@ -14,6 +15,7 @@ public class ButtonEditor extends DefaultCellEditor {
     private int row; //
     private java.util.List<Flight> flights;
     private FlightDetailController flightDetailController;
+    private FlightDetailFacade flightDetailFacade;
     private JTable table;
 // <-- 1. ADD THIS FIELD TO STORE THE ROW
 
@@ -28,7 +30,7 @@ public class ButtonEditor extends DefaultCellEditor {
                     Flight selectedFlight = flights.get(row);
                     if (flightDetailController != null) {
                         System.out.println("Button clicked, executing controller: " + selectedFlight);
-                        flightDetailController.execute(selectedFlight);
+                        flightDetailController.execute(selectedFlight.Id);
                     } else {
                         System.out.println("Controller is null!");
                     }
@@ -44,10 +46,10 @@ public class ButtonEditor extends DefaultCellEditor {
 
     public void setDependencies(JTable table,
                                 java.util.List<Flight> flights,
-                                FlightDetailController controller) {
+                                FlightDetailFacade facade) {
         this.table = table;
         this.flights = flights;
-        this.flightDetailController = controller;
+        this.flightDetailFacade = facade;
     }
 
     @Override
@@ -68,8 +70,8 @@ public class ButtonEditor extends DefaultCellEditor {
             if (flights != null && selectedRow >= 0 && selectedRow < flights.size()) {
                 Flight selectedFlight = flights.get(selectedRow);
 
-                if (flightDetailController != null) {
-                    flightDetailController.execute(selectedFlight);
+                if (flightDetailFacade != null) {
+                    flightDetailFacade.showFlightDetail(selectedFlight.Id);
                 }
             }
         }

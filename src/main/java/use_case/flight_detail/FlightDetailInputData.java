@@ -4,14 +4,14 @@ import entity.Flight;
 
 public class FlightDetailInputData {
 
-    private final Flight flight;
+    private final String flightId;
 
-    public FlightDetailInputData(Flight flight) {
-        this.flight = flight;
+    public FlightDetailInputData(String flightId) {
+        this.flightId = flightId;
     }
 
-    public Flight getFlight() {
-        return flight;
+    public String getFlightId() {
+        return flightId;
     }
 }
 

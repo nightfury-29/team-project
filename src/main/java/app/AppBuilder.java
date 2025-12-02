@@ -43,7 +43,7 @@ import use_case.view_history.ViewHistoryOutputBoundary;
 import view.*;
 
 import data_access.FileSearchHistoryDAO;
-import api_access.FlightApiClient;
+import data_access.InMemoryFlightDataAccessObject;
 import use_case.sort_flights.SortFlightsDataAccessInterface;
 import view.LoggedInView;
 import view.LoginView;
@@ -64,6 +64,7 @@ import use_case.sort_flights.SortFlightsInputBoundary;
 import use_case.sort_flights.SortFlightsInteractor;
 import use_case.sort_flights.SortFlightsOutputBoundary;
 
+import interface_adapter.flight_detail.FlightDetailFacade;
 import interface_adapter.flight_detail.FlightDetailController;
 import interface_adapter.flight_detail.FlightDetailPresenter;
 import use_case.flight_detail.FlightDetailInputBoundary;
@@ -80,7 +81,6 @@ import interface_adapter.save_flight.SaveFlightPresenter;
 import interface_adapter.save_flight.SaveFlightViewModel;
 import use_case.save_flight.SaveFlightInputBoundary;
 import use_case.save_flight.SaveFlightInteractor;
-import use_case.save_flight.SaveFlightOutputBoundary;
 
 
 
@@ -91,15 +91,6 @@ import use_case.saved_flights.SavedFlightsOutputBoundary;
 import interface_adapter.saved_flights.SavedFlightsPresenter;
 import interface_adapter.saved_flights.SavedFlightsViewModel;
 import interface_adapter.saved_flights.SeeSavedFlightsController;
-import interface_adapter.saved_flights.SavedFlightDetailController;
-
-import interface_adapter.compare_saved_flights.CompareSavedFlightsController;
-import interface_adapter.compare_saved_flights.CompareSavedFlightsPresenter;
-import interface_adapter.compare_saved_flights.CompareSavedFlightsViewModel;
-import use_case.compare_saved_flights.CompareSavedFlightsInputBoundary;
-import use_case.compare_saved_flights.CompareSavedFlightsInteractor;
-import use_case.compare_saved_flights.CompareSavedFlightsOutputBoundary;
-import view.CompareFlightsView;
 
 import view.SavedFlightsView;
 
@@ -138,9 +129,6 @@ public class AppBuilder {
     private ViewingHistoryViewModel viewingHistoryViewModel;
     private SavedFlightsViewModel savedFlightsViewModel;
     private SavedFlightsView savedFlightsView;
-    private FlightDetailController flightDetailController;
-    private CompareSavedFlightsViewModel compareSavedFlightsViewModel;
-    private CompareFlightsView compareFlightsView;
 
 
     public AppBuilder() {
@@ -187,24 +175,6 @@ public class AppBuilder {
 
         LoginController loginController = new LoginController(loginInteractor);
         loginView.setLoginController(loginController);
-        return this;
-    }
-
-    public AppBuilder addSaveFlightUseCase() {
-
-        SaveFlightDataAccessInterface saveFlightDAO = new SaveFlightDataAccessObject();
-
-        SaveFlightOutputBoundary saveFlightPresenter =
-                new SaveFlightPresenter(this.saveFlightViewModel, this.viewManagerModel);
-
-        SaveFlightInputBoundary saveFlightInteractor =
-                new SaveFlightInteractor(saveFlightDAO, this.userDataAccessObject, saveFlightPresenter);
-
-        SaveFlightController saveFlightController =
-                new SaveFlightController(saveFlightInteractor);
-
-        this.flightDetailView.setSaveFlightController(saveFlightController);
-
         return this;
     }
 
@@ -273,7 +243,7 @@ public class AppBuilder {
     public AppBuilder addFindFlightUseCase() {
         // --- Initialize DAOs ---
         // (We use InMemory for this example, but you could swap it)
-        FindFlightApiAccessInterface flightDataAccessObject = new FlightApiClient();
+        FindFlightUserDataAccessInterface flightDataAccessObject = new InMemoryFlightDataAccessObject();
 
 
         // --- Initialize Helpers ---
@@ -338,68 +308,82 @@ public class AppBuilder {
     public AppBuilder addFlightDetailUseCase() {
 
         // Flight Detail:
-        final FlightDetailDataAccessInterface flightDetailDataAccessObject =
-                new FlightDetailDataAccessObject();
+        final FlightDetailDataAccessInterface flightDetailDataAccessObject = new FlightDetailDataAccessObject();
 
-        final FlightDetailPresenter presenter = new FlightDetailPresenter(
-                flightDetailViewModel,
+        final FlightDetailPresenter presenter = new FlightDetailPresenter(flightDetailViewModel,
                 flightResultsViewModel,
-                viewManagerModel
-        );
+                viewManagerModel);
 
-        final FlightDetailInputBoundary flightDetailInteractor =
-                new FlightDetailInteractor(flightDetailDataAccessObject, presenter);
+        final FlightDetailInputBoundary flightDetailInteractor = new FlightDetailInteractor(flightDetailDataAccessObject,presenter);
 
         final FlightDetailController controller =
                 new FlightDetailController(flightDetailInteractor);
 
-        flightDetailView.setController(controller);
+        final FlightDetailFacade flightDetailFacade =
+                new FlightDetailFacade(
+                        controller,
+                        presenter,
+                        flightDetailViewModel,
+                        viewManagerModel
+                );
+
+        this.flightDetailView.setFacade(flightDetailFacade);
+        if (this.flightResultsView != null) {
+            this.flightResultsView.setFlightDetailFacade(flightDetailFacade);
+        }
 
         if (this.flightResultsView != null) {
             this.flightResultsView.setFlightDetailController(controller);
         }
 
+        // Go Back
         final GoBackOutputBoundary goBackPresenter = new GoBackPresenter(viewManagerModel);
+
         final GoBackInputBoundary goBackInteractor = new GoBackInteractor(goBackPresenter);
+
         final GoBackController goBackController = new GoBackController(goBackInteractor);
+
         flightDetailView.setGoBackController(goBackController);
 
+        // Save Flight
+        final SaveFlightDataAccessInterface saveFlightDataAccessObject = new SaveFlightDataAccessObject();
+
+        final SaveFlightPresenter saveFlightPresenter = new SaveFlightPresenter(saveFlightViewModel, viewManagerModel);
+
+        final SaveFlightInputBoundary saveFlightInteractor = new SaveFlightInteractor(saveFlightDataAccessObject, this.userDataAccessObject, saveFlightPresenter);
+
+        final SaveFlightController saveFlightController = new SaveFlightController(saveFlightInteractor);
+
+        flightDetailView.setSaveFlightController(saveFlightController);
 
         return this;
     }
     public AppBuilder addSavedFlightsView() {
 
+        // 1. Create ViewModel
         this.savedFlightsViewModel = new SavedFlightsViewModel();
 
+        // 2. Create Presenter
         SavedFlightsPresenter savedFlightsPresenter =
                 new SavedFlightsPresenter(this.savedFlightsViewModel, viewManagerModel);
 
+        // 3. Create Interactor
         SaveFlightDataAccessInterface dao = new SaveFlightDataAccessObject();
-
         SavedFlightsInteractor savedFlightsInteractor =
                 new SavedFlightsInteractor(dao, savedFlightsPresenter);
 
+        // 4. Create Controller
         SeeSavedFlightsController savedFlightsController =
                 new SeeSavedFlightsController(savedFlightsInteractor);
 
-        this.savedFlightsView =
+        // 5. Register panel to CardLayout
+        SavedFlightsView savedFlightsView =
                 new SavedFlightsView(this.savedFlightsViewModel, this.viewManagerModel);
 
-        SavedFlightDetailController detailController =
-                new SavedFlightDetailController(this.flightDetailViewModel, this.viewManagerModel);
-        this.savedFlightsView.setFlightDetailController(detailController);
-
-        cardPanel.add(this.savedFlightsView, this.savedFlightsViewModel.getViewName());
-
-        GoBackOutputBoundary goBackPresenter = new GoBackPresenter(viewManagerModel);
-        GoBackInputBoundary goBackInteractor = new GoBackInteractor(goBackPresenter);
-        GoBackController goBackController = new GoBackController(goBackInteractor);
-
-        this.savedFlightsView.setGoBackController(goBackController);
+        cardPanel.add(savedFlightsView, this.savedFlightsViewModel.getViewName());
 
         return this;
     }
-
 
 
 
@@ -449,37 +433,5 @@ public class AppBuilder {
 
         return this;
     }
-    public AppBuilder addCompareSavedFlightsView() {
-        this.compareSavedFlightsViewModel = new CompareSavedFlightsViewModel();
-        this.compareFlightsView = new CompareFlightsView(compareSavedFlightsViewModel);
-
-        cardPanel.add(compareFlightsView, compareSavedFlightsViewModel.getViewName());
-
-        GoBackOutputBoundary goBackPresenter = new GoBackPresenter(viewManagerModel);
-        GoBackInputBoundary goBackInteractor = new GoBackInteractor(goBackPresenter);
-        GoBackController goBackController = new GoBackController(goBackInteractor);
-        compareFlightsView.setGoBackController(goBackController);
-
-        return this;
-    }
-    public AppBuilder addCompareSavedFlightsUseCase() {
-
-        // presenter
-        CompareSavedFlightsOutputBoundary presenter =
-                new CompareSavedFlightsPresenter(compareSavedFlightsViewModel, viewManagerModel);
-
-        // interactor
-        CompareSavedFlightsInputBoundary interactor =
-                new CompareSavedFlightsInteractor(presenter);
-
-        // controller
-        CompareSavedFlightsController controller =
-                new CompareSavedFlightsController(interactor);
-
-        this.savedFlightsView.setCompareSavedFlightsController(controller);
-
-        return this;
-    }
-
 
 }

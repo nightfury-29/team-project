@@ -1,9 +1,6 @@
 package interface_adapter.flight_detail;
 
 import data_transfer_objects.FlightDetailDataTransferObject;
-import use_case.flight_detail.FlightDetailOutputData;
-
-import java.util.List;
 
 public class FlightDetailState {
 
@@ -21,9 +18,11 @@ public class FlightDetailState {
     public FlightDetailState(){}
 
     public FlightDetailDataTransferObject getFlightDetail() { return flightDetail;}
+
     public void setFlightDetail(FlightDetailDataTransferObject flightDetail) { this.flightDetail = flightDetail; }
 
     public String getErrorMessage() { return errorMessage; }
+
     public void setErrorMessage(String errorMessage) { this.errorMessage = errorMessage; }
 
     public String getPreviousViewName() { return previousViewName; }

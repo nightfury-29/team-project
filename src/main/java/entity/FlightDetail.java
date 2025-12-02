@@ -4,22 +4,16 @@ import java.util.List;
 
 public class FlightDetail {
 
-    /** Offer ID from Amadeus */
     public final String id;
 
-    /** How many seats are bookable */
     public final int numberOfBookableSeats;
 
-    /** Total price information */
-    public final Price price;   // includes total, currency
+    public final Price price;
 
-    /** Fare option (e.g. STANDARD, BASIC, etc.) */
     public final String fareOption;
 
-    /** All segments in this (one-way) journey */
     public final List<SegmentDetail> segments;
 
-    /** Constructor */
     public FlightDetail(String id,
                         int numberOfBookableSeats,
                         Price price,
@@ -35,7 +29,7 @@ public class FlightDetail {
     /* -------------------- SUB ENTITIES -------------------- */
 
     /**
-     * Price entity (you already have something similar but we simplify)
+     * Price entity.
      */
     public static class Price {
         public final double total;
@@ -48,7 +42,7 @@ public class FlightDetail {
     }
 
     /**
-     * Segment detail including baggage and amenities
+     * Segment detail including baggage and amenities.
      */
     public static class SegmentDetail {
 
@@ -97,7 +91,7 @@ public class FlightDetail {
     }
 
     /**
-     * Baggage info (checked + cabin)
+     * Baggage info (checked + cabin).
      */
     public static class Baggage {
         public final int checkedBags;
@@ -110,12 +104,12 @@ public class FlightDetail {
     }
 
     /**
-     * Amenity info
+     * Amenity info.
      */
     public static class Amenity {
-        public final String description;      // e.g. "SECOND BAG"
-        public final String amenityType;      // BAGGAGE / PRE_RESERVED_SEAT / etc.
-        public final boolean isChargeable;    // true/false
+        public final String description;
+        public final String amenityType;
+        public final boolean isChargeable;
 
         public Amenity(String description, String amenityType, boolean isChargeable) {
             this.description = description;
@@ -124,5 +118,4 @@ public class FlightDetail {
         }
     }
 }
-
 

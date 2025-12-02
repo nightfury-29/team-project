@@ -6,7 +6,6 @@ import org.json.JSONObject;
 /**
  * A simple cache to store the full Amadeus flight-offer JSON response.
  * Allows lookup of a single offer by its ID.
- *
  * This avoids calling the API again when the user clicks "View Details".
  */
 public class FlightOfferCache {
@@ -16,10 +15,10 @@ public class FlightOfferCache {
     private JSONObject fullResponseJson = null;
     private JSONArray offersArray = null;
 
-    /** Private constructor for singleton */
+    /** Private constructor for singleton. */
     private FlightOfferCache() {}
 
-    /** Singleton accessor */
+    /** Singleton accessor. */
     public static synchronized FlightOfferCache getInstance() {
         if (instance == null) {
             instance = new FlightOfferCache();
@@ -46,7 +45,7 @@ public class FlightOfferCache {
         return this.offersArray;
     }
 
-    /** Check if the cache has data */
+    /** Check if the cache has data. */
     public synchronized boolean hasData() {
         return offersArray != null && offersArray.length() > 0;
     }
@@ -57,10 +56,12 @@ public class FlightOfferCache {
      * @return The matching offer JSON object, or null if not found
      */
     public synchronized JSONObject getOfferById(String id) {
-        if (offersArray == null) return null;
+        if (offersArray == null) {
+            return null;
+        }
 
         for (int i = 0; i < offersArray.length(); i++) {
-            JSONObject offer = offersArray.getJSONObject(i);
+            final JSONObject offer = offersArray.getJSONObject(i);
             if (offer.has("id") && offer.getString("id").equals(id)) {
                 return offer;
             }
@@ -69,7 +70,7 @@ public class FlightOfferCache {
     }
 
     /**
-     * Clears the cache
+     * Clears the cache.
      */
     public synchronized void clear() {
         fullResponseJson = null;

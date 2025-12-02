@@ -1,8 +1,9 @@
 package data_access;
 
+import org.json.JSONObject;
+
 import entity.Flight;
 import entity.FlightDetail;
-import org.json.JSONObject;
 import use_case.flight_detail.FlightDetailDataAccessInterface;
 
 public class FlightDetailDataAccessObject implements FlightDetailDataAccessInterface {
@@ -16,28 +17,25 @@ public class FlightDetailDataAccessObject implements FlightDetailDataAccessInter
     }
 
     @Override
-    public FlightDetail fetchDetail(Flight flight) {
-//        System.out.println("[DEBUG] DAO called: fetchDetail(), flight ID = " + flight.Id);
+    public FlightDetail fetchDetail(String flightId) {
 
-
-        if (flight == null || flight.Id == null) {
+        if (flightId == null) {
             System.out.println("[ERROR] Flight or Flight.Id is null.");
             return null;
         }
 
-        String id = flight.Id;
 
-        JSONObject offerJson = cache.getOfferById(id);
+        final JSONObject offerJson = cache.getOfferById(flightId);
 
         if (offerJson == null) {
-            System.out.println("[ERROR] No cached offer with id = " + id);
+            System.out.println("[ERROR] No cached offer with id = " + flightId + ".");
             return null;
         }
 
-        FlightDetail detail = parser.parseOfferToFlightDetail(offerJson);
+        final FlightDetail detail = parser.parseOfferToFlightDetail(offerJson);
 
         if (detail == null) {
-            System.out.println("[ERROR] Could not parse offer with id = " + id);
+            System.out.println("[ERROR] Could not parse offer with id = " + flightId + ".");
         }
 
         return detail;
