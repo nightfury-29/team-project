@@ -1,9 +1,5 @@
 package view;
 
-//import entity.FlightDetail;
-//import entity.FlightDetail.SegmentDetail;
-//import entity.FlightDetail.Amenity;
-//import entity.FlightDetail.Baggage;
 import data_transfer_objects.FlightDetailDataTransferObject;
 import data_transfer_objects.FlightDetailDataTransferObject.AmenityDTO;
 import data_transfer_objects.FlightDetailDataTransferObject.BaggageDTO;

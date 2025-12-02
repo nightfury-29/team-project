@@ -17,6 +17,7 @@ import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
+import java.util.ArrayList;
 
 public class FlightResultsView extends JPanel implements ActionListener, PropertyChangeListener {
 
@@ -30,6 +31,11 @@ public class FlightResultsView extends JPanel implements ActionListener, Propert
     private final JButton sortByPrice;
     private final JButton sortByDuration;
     private final JButton sortByNonstop;
+    private final JButton showAllFlights;
+
+    private List<Flight> allFlightsCache;
+    private List<Flight> currentDisplayedFlights = new ArrayList<>();
+
     private final JButton goBack;
     private GoBackController goBackController;
     private SortFlightsController sortFlightsController;
@@ -77,11 +83,13 @@ public class FlightResultsView extends JPanel implements ActionListener, Propert
         sortByPrice = new JButton(FlightResultsViewModel.SORT_BY_PRICE_BUTTON_LABEL);
         sortByDuration = new JButton(FlightResultsViewModel.SORT_BY_DURATION_BUTTON_LABEL);
         sortByNonstop = new JButton(FlightResultsViewModel.NONSTOP_BUTTON_LABEL);
+        showAllFlights = new JButton(FlightResultsViewModel.SHOW_ALL_FLIGHTS_BUTTON_LABEL);
         goBack = new JButton(FlightResultsViewModel.GO_BACK_BUTTON_LABEL);
 
         buttons.add(sortByDuration);
         buttons.add(sortByPrice);
         buttons.add(sortByNonstop);
+        buttons.add(showAllFlights);
         buttons.add(goBack);
 
         // --- Button Listeners ---
@@ -93,22 +101,35 @@ public class FlightResultsView extends JPanel implements ActionListener, Propert
 
         sortByPrice.addActionListener(e -> {
             if (sortFlightsController != null) {
-                FlightResultsState currentState = flightResultsViewModel.getState();
-                sortFlightsController.execute(currentState.getFlights(), "PRICE");
+                List<Flight> flightsToUse = (currentDisplayedFlights != null && !currentDisplayedFlights.isEmpty())
+                        ? currentDisplayedFlights
+                        : flightResultsViewModel.getState().getFlights();
+                sortFlightsController.execute(flightsToUse, "PRICE");
             }
         });
 
         sortByDuration.addActionListener(e -> {
             if (sortFlightsController != null) {
-                FlightResultsState currentState = flightResultsViewModel.getState();
-                sortFlightsController.execute(currentState.getFlights(), "DURATION");
+                List<Flight> flightsToUse = (currentDisplayedFlights != null && !currentDisplayedFlights.isEmpty())
+                        ? currentDisplayedFlights
+                        : flightResultsViewModel.getState().getFlights();
+                sortFlightsController.execute(flightsToUse, "DURATION");
             }
         });
 
         sortByNonstop.addActionListener(e -> {
             if (sortFlightsController != null) {
-                FlightResultsState currentState = flightResultsViewModel.getState();
-                sortFlightsController.execute(currentState.getFlights(), "NONSTOP");
+                List<Flight> flightsToUse = (currentDisplayedFlights != null && !currentDisplayedFlights.isEmpty())
+                        ? currentDisplayedFlights
+                        : flightResultsViewModel.getState().getFlights();
+                sortFlightsController.execute(flightsToUse, "NONSTOP");
+            }
+        });
+
+        // Show all should restore the full list in the table
+        showAllFlights.addActionListener(e -> {
+            if (allFlightsCache != null && !allFlightsCache.isEmpty()) {
+                updateTable(allFlightsCache);
             }
         });
         // Listeners will be added once controllers are made
@@ -136,6 +157,7 @@ public class FlightResultsView extends JPanel implements ActionListener, Propert
 
     // This method updates the table when the ViewModel's state changes
     private void updateTable(List<Flight> flights) {
+        currentDisplayedFlights = (flights == null) ? new ArrayList<>() : new ArrayList<>(flights);
         // Clear existing rows
         tableModel.setRowCount(0);
 
@@ -200,6 +222,7 @@ public class FlightResultsView extends JPanel implements ActionListener, Propert
 
     public void setFlightDetailController(FlightDetailController controller) {
         this.flightDetailController = controller;
+        updateTable(currentDisplayedFlights);
         refreshButtonEditor();
     }
 
@@ -211,6 +234,12 @@ public class FlightResultsView extends JPanel implements ActionListener, Propert
                 JOptionPane.showMessageDialog(this, state.getError());
                 state.setError(null); // Clear error after showing
             } else {
+                List<Flight> flights = state.getFlights();
+
+                if (flights != null &&
+                        (allFlightsCache == null || flights.size() > allFlightsCache.size())) {
+                    allFlightsCache = new ArrayList<>(flights);
+                }
                 updateTable(state.getFlights());
                 refreshButtonEditor();
             }

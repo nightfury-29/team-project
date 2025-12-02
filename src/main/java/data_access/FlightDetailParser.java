@@ -21,7 +21,7 @@ import entity.FlightDetail;
 public class FlightDetailParser {
 
     public FlightDetail parseOfferToFlightDetail(JSONObject offer) {
-//      System.out.println("[DEBUG] Parser reached. offerId = " + offer.optString("id"));
+//        System.out.println("[DEBUG] Parser reached. offerId = " + offer.optString("id"));
 
         if (offer == null) return null;
 

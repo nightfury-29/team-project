@@ -36,22 +36,7 @@ public class SavedFlightButtonEditor extends AbstractCellEditor implements Table
             FlightDetail f = flights.get(row);
             if (f.segments == null || f.segments.isEmpty()) return;
 
-            SegmentDetail seg = f.segments.get(0);
-
-            Flight flight = new Flight(
-                    f.id,
-                    seg.departureAirport,
-                    seg.departureTime,
-                    seg.arrivalAirport,
-                    seg.arrivalTime,
-                    f.price.total,
-                    f.price.currency,
-                    seg.duration,
-                    seg.carrierCode,
-                    seg.aircraft
-            );
-
-            controller.execute(flight.Id);
+            controller.execute(f);
         });
 
         return button;

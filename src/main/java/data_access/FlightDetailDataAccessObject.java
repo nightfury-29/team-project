@@ -1,9 +1,8 @@
 package data_access;
 
-import org.json.JSONObject;
-
 import entity.Flight;
 import entity.FlightDetail;
+import org.json.JSONObject;
 import use_case.flight_detail.FlightDetailDataAccessInterface;
 
 public class FlightDetailDataAccessObject implements FlightDetailDataAccessInterface {
