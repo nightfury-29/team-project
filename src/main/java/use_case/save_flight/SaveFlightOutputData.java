@@ -1,8 +1,6 @@
 package use_case.save_flight;
 
-//import entity.FlightDetail;
 import data_transfer_objects.FlightDetailDataTransferObject;
-
 
 /**
  * The output data for the Save Flight Use Case.
@@ -10,7 +8,7 @@ import data_transfer_objects.FlightDetailDataTransferObject;
 public class SaveFlightOutputData {
     private final boolean success;
     private final String message;
-    private final FlightDetailDataTransferObject savedFlight; // optional, can be null
+    private final FlightDetailDataTransferObject savedFlight;
 
     public SaveFlightOutputData(boolean success, String message) {
         this(success, message, null);
@@ -22,7 +20,7 @@ public class SaveFlightOutputData {
         this.savedFlight = savedFlight;
     }
 
-    public boolean isSuccess() { return success; }
-    public String getMessage() { return message; }
-    public FlightDetailDataTransferObject getSavedFlight() { return savedFlight; }
+    public String getMessage() {
+        return message;
+    }
 }

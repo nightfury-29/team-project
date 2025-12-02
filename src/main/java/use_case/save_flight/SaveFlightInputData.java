@@ -1,6 +1,5 @@
 package use_case.save_flight;
 
-//import entity.FlightDetail;
 import data_transfer_objects.FlightDetailDataTransferObject;
 
 /**
@@ -18,7 +17,16 @@ public class SaveFlightInputData {
         return flight;
     }
 
+    /**
+     * Returns the ID of the flight, or null if no flight exists.
+     *
+     * @return the flight ID, or null if flight is not set
+     */
     public String getFlightId() {
-        return flight == null ? null : flight.id;
+        String id = null;
+        if (flight != null) {
+            id = flight.id;
+        }
+        return id;
     }
 }
