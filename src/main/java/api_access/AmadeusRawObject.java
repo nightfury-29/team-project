@@ -28,8 +28,8 @@ public class AmadeusRawObject {
                                              boolean nonStop) {
         OkHttpClient client = new OkHttpClient();
 
-        String clientId = "xAellLGd477aHyuSLn1cBW0bQr6hKaM9";
-        String clientSecret = "LIiEa7QZoQE9yImg";
+        String clientId = "UlRZ9grv8M0qFuY6dRw18w6roeWeYov7";
+        String clientSecret = "hWJ4HM9H55fyiSMg";
         String accessToken;
 
         List<Flight> list = new ArrayList<>();
