@@ -64,6 +64,7 @@ import use_case.sort_flights.SortFlightsInputBoundary;
 import use_case.sort_flights.SortFlightsInteractor;
 import use_case.sort_flights.SortFlightsOutputBoundary;
 
+import interface_adapter.flight_detail.FlightDetailFacade;
 import interface_adapter.flight_detail.FlightDetailController;
 import interface_adapter.flight_detail.FlightDetailPresenter;
 import use_case.flight_detail.FlightDetailInputBoundary;
@@ -315,11 +316,21 @@ public class AppBuilder {
 
         final FlightDetailInputBoundary flightDetailInteractor = new FlightDetailInteractor(flightDetailDataAccessObject,presenter);
 
-
         final FlightDetailController controller =
                 new FlightDetailController(flightDetailInteractor);
 
-        flightDetailView.setController(controller);
+        final FlightDetailFacade flightDetailFacade =
+                new FlightDetailFacade(
+                        controller,
+                        presenter,
+                        flightDetailViewModel,
+                        viewManagerModel
+                );
+
+        this.flightDetailView.setFacade(flightDetailFacade);
+        if (this.flightResultsView != null) {
+            this.flightResultsView.setFlightDetailFacade(flightDetailFacade);
+        }
 
         if (this.flightResultsView != null) {
             this.flightResultsView.setFlightDetailController(controller);

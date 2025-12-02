@@ -9,6 +9,7 @@ import data_transfer_objects.FlightDetailDataTransferObject.AmenityDTO;
 import data_transfer_objects.FlightDetailDataTransferObject.BaggageDTO;
 import data_transfer_objects.FlightDetailDataTransferObject.SegmentDTO;
 import interface_adapter.flight_detail.FlightDetailController;
+import interface_adapter.flight_detail.FlightDetailFacade;
 import interface_adapter.flight_detail.FlightDetailState;
 import interface_adapter.flight_detail.FlightDetailViewModel;
 import interface_adapter.go_back.GoBackController;
@@ -25,6 +26,7 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
     private final String viewName = "flight detail";
     private final FlightDetailViewModel fdViewModel;
     private FlightDetailController controller;
+    private FlightDetailFacade facade;
     private GoBackController goBackController;
     private SaveFlightController sfcontroller;
     private final SaveFlightViewModel saveFlightViewModel;
@@ -85,8 +87,8 @@ public class FlightDetailView extends JPanel implements PropertyChangeListener {
         renderEmpty();
     }
 
-    public void setController(FlightDetailController controller) {
-        this.controller = controller;
+    public void setFacade(FlightDetailFacade facade) {
+        this.facade = facade;
     }
 
     public JButton getSaveButton() { return saveButton; }
