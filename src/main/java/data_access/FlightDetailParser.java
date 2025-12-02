@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import entity.FlightDetail;
 
 /**
- * Converts a single "offer" JSON object from Amadeus API
+ * Converts a single "offer" JSON object from Amadeus API.
  * into a FlightDetail entity.
  * This parser assumes ONE-WAY itineraries and extracts:
  * - numberOfBookableSeats

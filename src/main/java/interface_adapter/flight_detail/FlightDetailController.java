@@ -1,6 +1,5 @@
 package interface_adapter.flight_detail;
 
-import entity.Flight;
 import use_case.flight_detail.FlightDetailInputBoundary;
 import use_case.flight_detail.FlightDetailInputData;
 

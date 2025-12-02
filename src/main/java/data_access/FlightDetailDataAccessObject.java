@@ -1,6 +1,5 @@
 package data_access;
 
-import entity.Flight;
 import entity.FlightDetail;
 import org.json.JSONObject;
 import use_case.flight_detail.FlightDetailDataAccessInterface;
@@ -22,7 +21,6 @@ public class FlightDetailDataAccessObject implements FlightDetailDataAccessInter
             System.out.println("[ERROR] Flight or Flight.Id is null.");
             return null;
         }
-
 
         final JSONObject offerJson = cache.getOfferById(flightId);
 
