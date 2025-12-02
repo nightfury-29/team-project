@@ -39,7 +39,7 @@ public class LoadHistoryPresenter implements LoadHistoryOutputBoundary {
         loggedInState.setDay(day);
         loggedInState.setMonth(month);
         loggedInState.setYear(year);
-        loggedInViewModel.firePropertyChange("load selection");
+        loggedInViewModel.firePropertyChange("update fields");
 
         viewManagerModel.setState(loggedInViewModel.getViewName());
         viewManagerModel.firePropertyChange();
