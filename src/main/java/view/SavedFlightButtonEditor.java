@@ -36,7 +36,6 @@ public class SavedFlightButtonEditor extends AbstractCellEditor implements Table
             FlightDetail f = flights.get(row);
             if (f.segments == null || f.segments.isEmpty()) return;
 
-            // 现在不再把它压缩成 Flight，而是直接把整个 FlightDetail 交给控制器
             controller.execute(f);
         });
 
