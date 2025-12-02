@@ -6,7 +6,7 @@ import java.util.List;
  * Output Data for the View History Use Case.
  */
 
-public class ViewHistoryOutputData {
+public class    ViewHistoryOutputData {
 
     private final List<ViewHistoryOutputDataItem> searchHistory;
 

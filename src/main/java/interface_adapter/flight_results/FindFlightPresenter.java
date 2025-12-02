@@ -1,6 +1,7 @@
 package interface_adapter.flight_results;
 
 import interface_adapter.ViewManagerModel;
+import interface_adapter.logged_in.LoggedInState;
 import interface_adapter.logged_in.LoggedInViewModel;
 import use_case.find_flight.FindFlightOutputBoundary;
 import use_case.find_flight.FindFlightOutputData;
@@ -51,6 +52,15 @@ public class FindFlightPresenter implements FindFlightOutputBoundary {
         flightResultsState.setFlights(outputData.getFlights());
         flightResultsState.setError(null);
         flightResultsViewModel.firePropertyChange();
+
+        // Reset the fields in the LoggedIn View
+        LoggedInState loggedInState = loggedInViewModel.getState();
+        loggedInState.setFrom("");
+        loggedInState.setTo("");
+        loggedInState.setDay("");
+        loggedInState.setMonth("January");
+        loggedInState.setYear("2025");
+        loggedInViewModel.firePropertyChange("reset fields");
 
         // Switch the view
         viewManagerModel.setState(flightResultsViewModel.getViewName());

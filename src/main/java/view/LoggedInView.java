@@ -274,7 +274,7 @@ public class LoggedInView extends JPanel implements ActionListener, PropertyChan
             JOptionPane.showMessageDialog(this, state.getError());
         }
 
-        else if (evt.getPropertyName().equals("load selection")) {
+        else if (evt.getPropertyName().equals("load selection") || evt.getPropertyName().equals("reset fields")) {
             fromInputField.setText(state.getFrom());
             toInputField.setText(state.getTo());
             dayInputField.setText(state.getDay());
