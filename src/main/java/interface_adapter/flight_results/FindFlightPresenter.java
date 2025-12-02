@@ -60,7 +60,7 @@ public class FindFlightPresenter implements FindFlightOutputBoundary {
         loggedInState.setDay("");
         loggedInState.setMonth("January");
         loggedInState.setYear("2025");
-        loggedInViewModel.firePropertyChange("reset fields");
+        loggedInViewModel.firePropertyChange("update fields");
 
         // Switch the view
         viewManagerModel.setState(flightResultsViewModel.getViewName());

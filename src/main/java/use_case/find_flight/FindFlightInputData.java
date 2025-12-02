@@ -17,9 +17,15 @@ public class FindFlightInputData {
         this.username = username;
         this.from = from;
         this.to = to;
-        this.day = Integer.parseInt(day);
         this.month = month;
         this.year = Integer.parseInt(year);
+
+        if (day.isEmpty()) {
+            this.day = -1;
+        }
+        else {
+            this.day = Integer.parseInt(day);
+        }
     }
 
     public String getUsername() {return username;}
