@@ -29,7 +29,6 @@ public class CompareSavedFlightsInteractor implements CompareSavedFlightsInputBo
         List<FlightDetail.SegmentDetail> segs = fd.segments;
 
         if (segs == null || segs.isEmpty()) {
-            // 防御性写法：没有 segment 的话给一份空 summary
             return new CompareSavedFlightsOutputData.FlightSummary(
                     "",
                     "",
