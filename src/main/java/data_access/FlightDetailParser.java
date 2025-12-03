@@ -13,7 +13,7 @@ import entity.FlightDetail;
  * into a FlightDetail entity.
  * This parser assumes ONE-WAY itineraries and extracts:
  * - numberOfBookableSeats
- * - price.total + currency
+ * - price + currency
  * - fareOption
  * - segments (flattened)
  * - segment baggage & amenities

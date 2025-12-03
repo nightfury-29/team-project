@@ -1,6 +1,5 @@
 package use_case.flight_detail;
 
-import entity.Flight;
 import entity.FlightDetail;
 import interface_adapter.ViewManagerModel;
 import interface_adapter.flight_detail.FlightDetailPresenter;
@@ -140,6 +139,64 @@ class FlightDetailInteractorTest {
         assertEquals("Could not retrieve flight details.",
                 viewModel.getState().getErrorMessage());
 
+        assertEquals("flight detail", vm.getState());
+    }
+
+    @Test
+    void testFailFlow_whenFlightIdIsNull() {
+        // Arrange
+        FakeFlightDetailDAO fakeDao = new FakeFlightDetailDAO();
+
+        FlightDetailViewModel viewModel = new FlightDetailViewModel();
+        FlightResultsViewModel resultsViewModel = new FlightResultsViewModel();
+        ViewManagerModel vm = new ViewManagerModel();
+
+        FlightDetailPresenter presenter =
+                new FlightDetailPresenter(viewModel, resultsViewModel, vm);
+
+        FlightDetailInteractor interactor =
+                new FlightDetailInteractor(fakeDao, presenter);
+
+        // Act
+        FlightDetailInputData inputData = new FlightDetailInputData(null);
+        interactor.execute(inputData);
+
+        // Assert
+        assertEquals("Error: Flight is null.", viewModel.getState().getErrorMessage());
+        assertEquals("flight detail", vm.getState());
+    }
+
+    static class ExceptionThrowingDAO implements FlightDetailDataAccessInterface {
+        @Override
+        public FlightDetail fetchDetail(String flightId) {
+            throw new RuntimeException("DAO failure");
+        }
+    }
+
+    @Test
+    void testFailFlow_whenDaoThrowsException() {
+        // Arrange
+        FlightDetailDataAccessInterface fakeDao = new ExceptionThrowingDAO();
+
+        FlightDetailViewModel viewModel = new FlightDetailViewModel();
+        FlightResultsViewModel resultsViewModel = new FlightResultsViewModel();
+        ViewManagerModel vm = new ViewManagerModel();
+
+        FlightDetailPresenter presenter =
+                new FlightDetailPresenter(viewModel, resultsViewModel, vm);
+
+        FlightDetailInteractor interactor =
+                new FlightDetailInteractor(fakeDao, presenter);
+
+        // Act
+        FlightDetailInputData inputData = new FlightDetailInputData("21");
+        interactor.execute(inputData);
+
+        // Assert
+        assertTrue(
+                viewModel.getState().getErrorMessage().contains("An error occurred"),
+                "Error message should indicate exception"
+        );
         assertEquals("flight detail", vm.getState());
     }
 }
